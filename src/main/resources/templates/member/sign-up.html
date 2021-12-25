@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form th:action="@{/sign-up}" method="post" th:object="${signUpForm}">
+        <div>
+            <label for="nickname">닉네임</label>
+            <input type="text" id="nickname" th:field="*{nickname}" required minlength="3" maxlength="20"/>
+            <small id="nicknameHelp">3자에서 20자 사이로 영어 대문자 및 특수문자를 제외하고 입력하세요.</small>
+            <small class="invalid-feedback">닉네임을 입력하세요.</small>
+            <small th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}"></small>
+        </div>
+        <div>
+            <label for="email">이메일</label>
+            <input type="text" id="email" th:field="*{email}" required/>
+            <small id="emailHelp">이메일 형식으로 입력해주세요. 가입 완료 후 이메일 인증 메일이 전송됩니다.</small>
+            <small class="invalid-feedback">이메일을 입력하세요.</small>
+            <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+        </div>
+        <div>
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" th:field="*{password}" required minlength="8" maxlength="20"/>
+            <small id="passwordHelp">비밀번호를 8자에서 20자 사이로 입력해주세요.</small>
+            <small class="invalid-feedback">비밀번호를 입력하세요.</small>
+            <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+        </div>
+        <div>
+            <label for="passwordConfirm">비밀번호 확인</label>
+            <input type="password" id="passwordConfirm" th:field="*{passwordConfirm}" required minlength="8" maxlength="20"/>
+            <small id="passwordConfirmHelp">비밀번호를 다시 한번 입력해주세요.</small>
+            <small class="invalid-feedback">비밀번호 확인을 입력하세요.</small>
+            <small th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></small>
+        </div>
+        <div>
+            <button type="submit">가입하기</button>
+        </div>
+    </form>
+</body>
+</html>
