@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head th:replace="fragments.html::head"></head>
+<body>
+    <div th:if="${param.error}">
+        잘못된 닉네임 혹은 비밀번호입니다.
+    </div>
+    <h1>My Playlists</h1>
+    <form th:action="@{/login}" method="post">
+        <div>
+            <label for="username">닉네임/이메일</label>
+            <input type="text" id="username" name="username" required/>
+            <small id="usernameHelp">가입하셨을 때 사용하신 이메일 혹은 닉네임을 입력해주세요.</small>
+        </div>
+        <div>
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" name="password" required/>
+            <small id="passwordHelp">비밀번호를 입력해주세요.</small>
+        </div>
+        <button type="submit">로그인 하기</button>
+        <a type="button" th:href="@{/sign-up}">회원가입 하기</a>
+    </form>
+</body>
+</html>

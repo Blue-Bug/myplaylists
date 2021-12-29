@@ -1,5 +1,6 @@
 package com.myplaylists.web.member;
 
+import com.myplaylists.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
@@ -37,8 +38,8 @@ public class MemberController {
             return "member/sign-up";
         }
 
-        memberService.joinProcess(signUpForm);
-
+        Member member = memberService.joinProcess(signUpForm);
+        memberService.login(member);
         return "redirect:/";
     }
 }
