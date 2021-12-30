@@ -1,5 +1,7 @@
-package com.myplaylists.web.member;
+package com.myplaylists.web.member.validator;
 
+import com.myplaylists.web.member.MemberRepository;
+import com.myplaylists.web.member.form.SignUpForm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;

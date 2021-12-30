@@ -1,8 +1,10 @@
 package com.myplaylists.web.member;
 
 import com.myplaylists.domain.Member;
+import com.myplaylists.web.member.form.LoginForm;
+import com.myplaylists.web.member.form.SignUpForm;
+import com.myplaylists.web.member.validator.SignUpFormValidator;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -10,7 +12,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 
@@ -37,9 +39,12 @@ public class MemberController {
         if(errors.hasErrors()){
             return "member/sign-up";
         }
+        LoginForm loginForm = new LoginForm(signUpForm.getNickname(), signUpForm.getPassword());
 
-        Member member = memberService.joinProcess(signUpForm);
-        memberService.login(member);
+        memberService.joinProcess(signUpForm);
+
+        memberService.login(loginForm);
+
         return "redirect:/";
     }
 }

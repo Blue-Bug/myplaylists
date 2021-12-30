@@ -6,7 +6,7 @@
         잘못된 닉네임 혹은 비밀번호입니다.
     </div>
     <h1>My Playlists</h1>
-    <form th:action="@{/login}" method="post">
+    <form th:action="@{/login}" method="post" novalidate>
         <div>
             <label for="username">닉네임/이메일</label>
             <input type="text" id="username" name="username" required/>
@@ -18,7 +18,7 @@
             <small id="passwordHelp">비밀번호를 입력해주세요.</small>
         </div>
         <button type="submit">로그인 하기</button>
-        <a type="button" th:href="@{/sign-up}">회원가입 하기</a>
+        <a href="/sign-up">회원가입 하기</a>
     </form>
 </body>
 </html>

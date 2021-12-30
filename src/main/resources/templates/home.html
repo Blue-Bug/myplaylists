@@ -6,7 +6,7 @@
     <div>
         <a href="/sign-up" sec:authorize="!isAuthenticated()">회원 가입</a>
         <a href="/login" sec:authorize="!isAuthenticated()">로그인</a>
-        <a href="/logout" sec:authorize="isAuthenticated()">로그아웃</a>
+        <form th:action="@{/logout}" method="post"><button type="submit" sec:authorize="isAuthenticated()">로그아웃</button></form>
     </div>
 </body>
 </html>

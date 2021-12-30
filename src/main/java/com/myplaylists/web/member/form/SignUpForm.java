@@ -1,4 +1,4 @@
-package com.myplaylists.web.member;
+package com.myplaylists.web.member.form;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;

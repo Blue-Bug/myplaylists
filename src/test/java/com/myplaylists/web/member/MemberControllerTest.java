@@ -1,6 +1,7 @@
 package com.myplaylists.web.member;
 
 import com.myplaylists.domain.Member;
+import com.myplaylists.web.member.form.SignUpForm;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,9 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;
+import static org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.unauthenticated;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -22,6 +26,8 @@ class MemberControllerTest {
     MockMvc mockMvc;
     @Autowired
     MemberRepository memberRepository;
+    @Autowired
+    MemberService memberService;
 
 
     @AfterEach
@@ -39,7 +45,7 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("회원가입 성공")
+    @DisplayName("회원가입 - 성공")
     void signUp_Success() throws Exception {
         mockMvc.perform(post("/sign-up")
                         .param("nickname","jun")
@@ -56,7 +62,7 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("회원가입 실패")
+    @DisplayName("회원가입 - 실패")
     void signUp_Failure() throws Exception {
         //닉네임 길이
         mockMvc.perform(post("/sign-up")
@@ -164,5 +170,60 @@ class MemberControllerTest {
 
         Member member7 = memberRepository.findByNickname("jun");
         assertNotEquals("test1@test.com",member7.getEmail());
+    }
+
+    @Test
+    @DisplayName("로그인 폼")
+    void loginForm() throws Exception {
+        mockMvc.perform(get("/login"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("login"));
+    }
+
+    @Test
+    @DisplayName("로그인 - 성공")
+    @Transactional
+    void loginSuccess() throws Exception{
+        SignUpForm signUpForm = new SignUpForm();
+        signUpForm.setNickname("jun");
+        signUpForm.setEmail("test@test.com");
+        signUpForm.setPassword("123123123");
+        memberService.joinProcess(signUpForm);
+
+        mockMvc.perform(post("/login")
+                .param("username","jun")
+                .param("password","123123123")
+                .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"))
+                .andExpect(authenticated());
+    }
+
+    @Test
+    @DisplayName("로그인 - 실패")
+    void loginFailure() throws Exception {
+        SignUpForm signUpForm = new SignUpForm();
+        signUpForm.setNickname("jun");
+        signUpForm.setEmail("test@test.com");
+        signUpForm.setPassword("123123123");
+        memberService.joinProcess(signUpForm);
+
+        //계정이 없는 경우
+        mockMvc.perform(post("/login")
+                        .param("username","jun1")
+                        .param("password","123123123")
+                        .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login?error"))
+                .andExpect(unauthenticated());
+
+        //비밀번호가 틀린 경우
+        mockMvc.perform(post("/login")
+                    .param("username","jun")
+                    .param("password","12312312")
+                    .with(csrf()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/login?error"))
+                .andExpect(unauthenticated());
     }
 }
