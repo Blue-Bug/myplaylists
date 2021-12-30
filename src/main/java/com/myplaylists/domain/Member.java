@@ -33,4 +33,9 @@ public class Member {
         this.token = UUID.randomUUID().toString();
         this.tokenGeneratedAt = LocalDateTime.now();
     }
+
+    public void checkEmailVerified() {
+        this.emailVerified = true;
+        this.joinedAt = LocalDateTime.now();
+    }
 }

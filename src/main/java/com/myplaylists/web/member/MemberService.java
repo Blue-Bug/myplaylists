@@ -84,4 +84,18 @@ public class MemberService implements UserDetailsService {
         }
         return new UserMember(member);
     }
+
+    public Member emailVerification(String email, String token) {
+        Member member = memberRepository.findByEmail(email);
+        if(member == null){
+            return null;
+        }
+        if(!member.getToken().equals(token)){
+            return null;
+        }
+        if(!member.isEmailVerified()){
+            member.checkEmailVerified();
+        }
+        return member;
+    }
 }

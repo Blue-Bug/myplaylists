@@ -47,4 +47,15 @@ public class MemberController {
 
         return "redirect:/";
     }
+
+    @GetMapping("/email-verify")
+    public String emailVerify(@RequestParam String email,@RequestParam String token,Model model){
+        Member member = memberService.emailVerification(email, token);
+        if(member == null){
+            model.addAttribute("error","invalid.verify");
+            return "member/email-verify";
+        }
+        model.addAttribute(member);
+        return "member/email-verify";
+    }
 }

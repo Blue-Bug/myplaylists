@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head th:replace="fragments.html::head"></head>
+<body>
+    <div th:if="${error == null}">
+        <span th:text="${member.nickname}"></span>회원님 이메일 인증이 완료되었습니다.
+    </div>
+    <div th:if="${error != null}">잘못된 이메일 인증 링크입니다.</div>
+</body>
+</html>
