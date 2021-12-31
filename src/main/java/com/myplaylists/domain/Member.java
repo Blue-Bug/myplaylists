@@ -27,7 +27,13 @@ public class Member {
 
     private LocalDateTime tokenGeneratedAt;
 
-    private boolean emailVerified;
+    private boolean emailVerified = false;
+
+    private String introduce;
+
+    private Long writtenPosts = 0L;
+
+    private Long writtenComments = 0L;
 
     public void generateToken() {
         this.token = UUID.randomUUID().toString();
