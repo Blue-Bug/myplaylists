@@ -9,16 +9,17 @@
     <form th:action="@{/login}" method="post" novalidate>
         <div>
             <label for="username">닉네임/이메일</label>
-            <input type="text" id="username" name="username" required/>
+            <input type="text" id="username" name="username" required minlength="3" maxlength="20"/>
             <small id="usernameHelp">가입하셨을 때 사용하신 이메일 혹은 닉네임을 입력해주세요.</small>
         </div>
         <div>
             <label for="password">비밀번호</label>
-            <input type="password" id="password" name="password" required/>
+            <input type="password" id="password" name="password" required minlength="3" maxlength="20"/>
             <small id="passwordHelp">비밀번호를 입력해주세요.</small>
         </div>
         <button type="submit">로그인 하기</button>
         <a href="/sign-up">회원가입 하기</a>
     </form>
+    <script th:replace="fragments.html::form-validation"></script>
 </body>
 </html>

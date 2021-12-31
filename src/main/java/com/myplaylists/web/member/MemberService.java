@@ -3,6 +3,8 @@ package com.myplaylists.web.member;
 import com.myplaylists.domain.Member;
 import com.myplaylists.web.member.form.LoginForm;
 import com.myplaylists.web.member.form.SignUpForm;
+import com.myplaylists.web.setting.form.PasswordForm;
+import com.myplaylists.web.setting.form.ProfileForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -14,9 +16,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
@@ -97,5 +101,40 @@ public class MemberService implements UserDetailsService {
             member.checkEmailVerified();
         }
         return member;
+    }
+
+    public boolean updateProfile(Member member, ProfileForm profileForm) {
+        Member byNickname = memberRepository.findByNickname(member.getNickname());
+        if(byNickname == null){
+            return false;
+        }
+        byNickname.setIntroduce(profileForm.getIntroduce());
+        memberRepository.save(byNickname);
+        return true;
+    }
+
+    public boolean signOut(Member member) {
+        if(member == null){
+            return false;
+        }
+        memberRepository.delete(member);
+        return true;
+    }
+
+    public boolean updatePassword(Member member, PasswordForm passwordForm) {
+        Member byNickname = memberRepository.findByNickname(member.getNickname());
+        if(byNickname == null){
+            return false;
+        }
+        byNickname.setPassword(passwordEncoder.encode(passwordForm.getPassword()));
+        memberRepository.save(byNickname);
+        return true;
+    }
+
+    public void logout(HttpServletRequest req) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if(auth != null && auth.isAuthenticated()){
+            new SecurityContextLogoutHandler().logout(req,null,auth);
+        }
     }
 }

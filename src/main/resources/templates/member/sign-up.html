@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head th:replace="fragments.html::head"></head>
 <body>
-    <form th:action="@{/sign-up}" method="post" th:object="${signUpForm}">
+    <form class="needs-validation" th:action="@{/sign-up}" method="post" th:object="${signUpForm}" novalidate>
         <div>
             <label for="nickname">닉네임</label>
             <input type="text" id="nickname" th:field="*{nickname}" required minlength="3" maxlength="20"/>
@@ -35,5 +35,6 @@
             <button type="submit">가입하기</button>
         </div>
     </form>
+    <script th:replace="fragments.html::form-validation"></script>
 </body>
 </html>

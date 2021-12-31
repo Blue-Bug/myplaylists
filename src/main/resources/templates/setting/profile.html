@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head th:replace="fragments.html::head"></head>
+<body>
+<div th:if="${message != null}">
+    <span th:text="${message}"></span>
+</div>
+<form method="post" th:action="@{/setting/profile}" th:object="${profileForm}">
+    <label for="introduce">자기소개를 입력해주세요.</label>
+    <input id="introduce" type="text" th:field="*{introduce}"/>
+    <small th:if="${#fields.hasErrors('introduce')}" th:errors="*{introduce}">20자 이내로 입력해주세요.</small>
+    <button type="submit">변경하기</button>
+</form>
+
+<form method="post" th:action="@{/setting/sign-out}">
+    <button type="submit">회원탈퇴 하기</button>
+</form>
+</body>
+</html>

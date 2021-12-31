@@ -2,11 +2,17 @@
 <html lang="en" xmlns:th="http://thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="fragments.html::head"></head>
 <body>
+    <div th:if="${message}">
+        <span th:text="${message}"></span>
+    </div>
     <h1>메인 화면</h1>
     <div>
         <a href="/sign-up" sec:authorize="!isAuthenticated()">회원 가입</a>
         <a href="/login" sec:authorize="!isAuthenticated()">로그인</a>
-        <form th:action="@{/logout}" method="post"><button type="submit" sec:authorize="isAuthenticated()">로그아웃</button></form>
+        <div sec:authorize="isAuthenticated()">
+            <form th:action="@{/logout}" method="post"><button type="submit">로그아웃</button></form>
+            <a th:href="@{'/profile/' + ${#authentication.name}}">내 프로필 보기</a>
+        </div>
     </div>
 </body>
 </html>

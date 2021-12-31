@@ -45,8 +45,8 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("회원가입 폼")
-    void signUpForm() throws Exception {
+    @DisplayName("회원가입 화면")
+    void signUpPage() throws Exception {
         mockMvc.perform(get("/sign-up"))
                 .andExpect(model().attributeExists("signUpForm"))
                 .andExpect(status().isOk())
@@ -173,8 +173,8 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("로그인 폼")
-    void loginForm() throws Exception {
+    @DisplayName("로그인 화면")
+    void loginPage() throws Exception {
         mockMvc.perform(get("/login"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("login"));

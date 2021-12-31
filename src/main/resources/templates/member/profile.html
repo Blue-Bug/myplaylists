@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head th:replace="fragments.html::head"></head>
+<body>
+<div th:if="${notExist == true}">
+    존재하지 않는 계정입니다.
+</div>
+
+<div th:if="${notExist == null}">
+    <div th:if="${owner == true}">
+        이 프로필의 주인입니다.
+        <a th:href="@{/setting/profile}"><button>프로필 변경하기</button></a>
+        <a th:href="@{/setting/password}"><button>비밀번호 변경하기</button></a>
+    </div>
+    <div>
+        <p>
+            <label>닉네임</label>
+            <span th:text="${member.nickname}"></span>
+        </p>
+        <p>
+            <label>자기 소개</label>
+            <span th:text="${member.introduce}"></span>
+        </p>
+        <p>
+            <label>가입 날짜</label>
+            <span th:if="${member.joinedAt == null}">이메일 인증을 완료해주세요.</span>
+            <span th:if="${member.joinedAt != null}" th:text="${member.joinedAt}"></span>
+        </p>
+        <p>
+            <label>작성한 글</label>
+            <span th:text="${member.writtenPosts} + 개"></span>
+        </p>
+        <p>
+            <label>작성한 댓글</label>
+            <span th:text="${member.writtenComments} + 개"></span>
+        </p>
+    </div>
+</div>
+</body>
+</html>
