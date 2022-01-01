@@ -2,24 +2,35 @@
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head th:replace="fragments.html::head"></head>
 <body>
-    <div th:if="${param.error}">
-        잘못된 닉네임 혹은 비밀번호입니다.
+<div class="container">
+    <div th:replace="fragments.html::main_nav"></div>
+    <h1 class="py-5 text-center">My Playlists</h1>
+    <div class="row justify-content-center">
+        <form class="need-validation col-md-6" th:action="@{/login}" method="post" novalidate>
+            <div th:if="${param.error}">
+                <small class="text-danger">잘못된 닉네임 혹은 비밀번호입니다.</small>
+            </div>
+            <div class="mb-3">
+                <label for="username">닉네임/이메일</label>
+                <input class="form-control" type="text" id="username" name="username" required minlength="3" maxlength="20"/>
+                <small id="usernameHelp">가입하셨을 때 사용하신 이메일 혹은 닉네임을 입력해주세요.</small>
+            </div>
+            <div class="mb-3">
+                <label for="password">비밀번호</label>
+                <input class="form-control" type="password" id="password" name="password" required minlength="3" maxlength="20"/>
+                <small id="passwordHelp">비밀번호를 입력해주세요.</small>
+            </div>
+            <div class="text-end">
+                <button class="mb-3 btn btn-primary" type="submit">로그인 하기</button>
+                <div>
+                    가입하지 않으셨다면 <a href="/sign-up">회원가입 하기!</a>
+                </div>
+            </div>
+
+        </form>
     </div>
-    <h1>My Playlists</h1>
-    <form th:action="@{/login}" method="post" novalidate>
-        <div>
-            <label for="username">닉네임/이메일</label>
-            <input type="text" id="username" name="username" required minlength="3" maxlength="20"/>
-            <small id="usernameHelp">가입하셨을 때 사용하신 이메일 혹은 닉네임을 입력해주세요.</small>
-        </div>
-        <div>
-            <label for="password">비밀번호</label>
-            <input type="password" id="password" name="password" required minlength="3" maxlength="20"/>
-            <small id="passwordHelp">비밀번호를 입력해주세요.</small>
-        </div>
-        <button type="submit">로그인 하기</button>
-        <a href="/sign-up">회원가입 하기</a>
-    </form>
+
     <script th:replace="fragments.html::form-validation"></script>
+</div>
 </body>
 </html>

@@ -36,6 +36,7 @@ public class SettingController {
     @GetMapping("/setting/profile")
     public String profileForm(@CurrentUser Member member, Model model){
         ProfileForm profileForm = modelMapper.map(member, ProfileForm.class);
+        model.addAttribute(member);
         model.addAttribute(profileForm);
         return "setting/profile";
     }
@@ -57,7 +58,8 @@ public class SettingController {
     }
 
     @GetMapping("/setting/password")
-    public String updatePasswordForm(Model model){
+    public String updatePasswordForm(@CurrentUser Member member, Model model){
+        model.addAttribute(member);
         model.addAttribute(new PasswordForm());
         return "setting/password";
     }
@@ -75,6 +77,12 @@ public class SettingController {
         }
 
         return "redirect:/setting/password";
+    }
+
+    @GetMapping("/setting/sign-out")
+    public String signOutForm(@CurrentUser Member member,Model model){
+        model.addAttribute(member);
+        return "setting/sign-out";
     }
 
     @PostMapping("/setting/sign-out")

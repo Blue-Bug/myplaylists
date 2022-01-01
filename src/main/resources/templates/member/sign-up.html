@@ -2,39 +2,53 @@
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head th:replace="fragments.html::head"></head>
 <body>
-    <form class="needs-validation" th:action="@{/sign-up}" method="post" th:object="${signUpForm}" novalidate>
-        <div>
-            <label for="nickname">닉네임</label>
-            <input type="text" id="nickname" th:field="*{nickname}" required minlength="3" maxlength="20"/>
-            <small id="nicknameHelp">3자에서 20자 사이로 영어 대문자 및 특수문자를 제외하고 입력하세요.</small>
-            <small class="invalid-feedback">닉네임을 입력하세요.</small>
-            <small th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}"></small>
-        </div>
-        <div>
-            <label for="email">이메일</label>
-            <input type="text" id="email" th:field="*{email}" required/>
-            <small id="emailHelp">이메일 형식으로 입력해주세요. 가입 완료 후 이메일 인증 메일이 전송됩니다.</small>
-            <small class="invalid-feedback">이메일을 입력하세요.</small>
-            <small th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
-        </div>
-        <div>
-            <label for="password">비밀번호</label>
-            <input type="password" id="password" th:field="*{password}" required minlength="8" maxlength="20"/>
-            <small id="passwordHelp">비밀번호를 8자에서 20자 사이로 입력해주세요.</small>
-            <small class="invalid-feedback">비밀번호를 입력하세요.</small>
-            <small th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
-        </div>
-        <div>
-            <label for="passwordConfirm">비밀번호 확인</label>
-            <input type="password" id="passwordConfirm" th:field="*{passwordConfirm}" required minlength="8" maxlength="20"/>
-            <small id="passwordConfirmHelp">비밀번호를 다시 한번 입력해주세요.</small>
-            <small class="invalid-feedback">비밀번호 확인을 입력하세요.</small>
-            <small th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></small>
-        </div>
-        <div>
-            <button type="submit">가입하기</button>
-        </div>
-    </form>
+<div class="container">
+    <div th:replace="fragments.html::main_nav"></div>
+    <h1 class="text-center py-5 mb-3">My Playlists Sign Up</h1>
+    <div class="row justify-content-center">
+        <form class="needs-validation col-md-8" th:action="@{/sign-up}" method="post" th:object="${signUpForm}" novalidate>
+            <div class="mb-3">
+                <label for="nickname">닉네임</label>
+                <input class="form-control" type="text" id="nickname" th:field="*{nickname}" required minlength="3" maxlength="20"/>
+                <small class="text-secondary" id="nicknameHelp">3자에서 20자 사이로 영어 대문자 및 특수문자를 제외하고 입력하세요.</small>
+                <small class="invalid-feedback">닉네임을 입력하세요.</small>
+                <div>
+                    <small class="text-danger" th:if="${#fields.hasErrors('nickname')}" th:errors="*{nickname}"></small>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="email">이메일</label>
+                <input class="form-control" type="text" id="email" th:field="*{email}" required/>
+                <small class="text-secondary" id="emailHelp">이메일 형식으로 입력해주세요. 가입 완료 후 이메일 인증 메일이 전송됩니다.</small>
+                <small class="invalid-feedback">이메일을 입력하세요.</small>
+                <div>
+                    <small class="text-danger" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></small>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="password">비밀번호</label>
+                <input class="form-control" type="password" id="password" th:field="*{password}" required minlength="8" maxlength="20"/>
+                <small class="text-secondary" id="passwordHelp">비밀번호를 8자에서 20자 사이로 입력해주세요.</small>
+                <small class="invalid-feedback">비밀번호를 입력하세요.</small>
+                <div>
+                    <small class="text-danger" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></small>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="passwordConfirm">비밀번호 확인</label>
+                <input class="form-control" type="password" id="passwordConfirm" th:field="*{passwordConfirm}" required minlength="8" maxlength="20"/>
+                <small class="text-secondary" id="passwordConfirmHelp">위에서 입력한 비밀번호를 다시 한번 입력해주세요.</small>
+                <small class="invalid-feedback">비밀번호 확인을 입력하세요.</small>
+                <div>
+                    <small class="text-danger" th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}"></small>
+                </div>
+            </div>
+            <div class="text-end">
+                <button type="submit" class="btn btn-primary">가입하기</button>
+            </div>
+        </form>
+    </div>
+</div>
     <script th:replace="fragments.html::form-validation"></script>
 </body>
 </html>

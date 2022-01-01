@@ -74,7 +74,7 @@ public class MemberController {
         if(member != null && member.getNickname().equals(nickname)){
             model.addAttribute("owner",true);
         }
-
+        model.addAttribute(member);
         model.addAttribute(profileMember);
         return "member/profile";
     }
