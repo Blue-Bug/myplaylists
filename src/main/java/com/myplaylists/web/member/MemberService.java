@@ -82,10 +82,11 @@ public class MemberService implements UserDetailsService {
         Member member = memberRepository.findByNickname(username);
         if(member == null){
             member = memberRepository.findByEmail(username);
+            if(member == null){
+                throw new UsernameNotFoundException(username);
+            }
         }
-        if(member == null){
-            throw new UsernameNotFoundException(username);
-        }
+
         return new UserMember(member);
     }
 

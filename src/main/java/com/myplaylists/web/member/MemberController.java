@@ -71,11 +71,13 @@ public class MemberController {
             model.addAttribute("notExist",true);
             return "member/profile";
         }
-        if(member != null && member.getNickname().equals(nickname)){
-            model.addAttribute("owner",true);
+        if(member != null){
+            model.addAttribute(member);
+            if(member.getNickname().equals(nickname)){
+                model.addAttribute("owner",true);
+            }
         }
-        model.addAttribute(member);
-        model.addAttribute(profileMember);
+        model.addAttribute("profileMember",profileMember);
         return "member/profile";
     }
 }

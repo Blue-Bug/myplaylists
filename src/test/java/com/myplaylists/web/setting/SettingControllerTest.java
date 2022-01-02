@@ -57,7 +57,7 @@ class SettingControllerTest {
     void profilePage() throws Exception {
         mockMvc.perform(get("/profile/jun"))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("member"))
+                .andExpect(model().attributeExists("profileMember"))
                 .andExpect(view().name("member/profile"));
     }
 
@@ -67,7 +67,7 @@ class SettingControllerTest {
         mockMvc.perform(get("/profile/jun1"))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("notExist",true))
-                .andExpect(model().attributeDoesNotExist("member"))
+                .andExpect(model().attributeDoesNotExist("profileMember"))
                 .andExpect(view().name("member/profile"));
     }
 
@@ -79,6 +79,7 @@ class SettingControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("owner",true))
                 .andExpect(model().attributeExists("member"))
+                .andExpect(model().attributeExists("profileMember"))
                 .andExpect(view().name("member/profile"));
     }
 

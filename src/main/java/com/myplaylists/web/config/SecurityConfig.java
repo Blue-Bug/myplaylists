@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 @Configuration
@@ -22,9 +23,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/setting/*").authenticated()
                 .anyRequest().denyAll();
 
-        http.formLogin().loginPage("/login").permitAll();
+        http.formLogin()
+                .loginPage("/login")
+                .successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
+                .permitAll();
 
         http.logout().logoutSuccessUrl("/");
+
+        //사용자 세션을 1개로 제한
+        http.sessionManagement(session -> session
+                        .maximumSessions(1)
+                );
     }
 
     @Bean

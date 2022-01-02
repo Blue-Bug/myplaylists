@@ -13,24 +13,24 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <p>
-                    <h1 th:text="${member.nickname}"></h1>
+                    <h1 th:text="${profileMember.nickname}"></h1>
                 </p>
                 <p>
                     <label>자기 소개</label>
-                    <span th:text="${member.introduce}"></span>
+                    <span th:text="${profileMember.introduce}"></span>
                 </p>
                 <p>
                     <label>가입 날짜</label>
-                    <span th:if="${member.joinedAt == null}">이메일 인증을 완료해주세요.</span>
-                    <span th:if="${member.joinedAt != null}" th:text="${member.joinedAt}"></span>
+                    <span th:if="${profileMember.joinedAt == null}">이메일 인증을 완료해주세요.</span>
+                    <span th:if="${profileMember.joinedAt != null}" th:text="${profileMember.joinedAt}"></span>
                 </p>
                 <p>
                     <label>작성한 글</label>
-                    <span th:text="${member.writtenPosts} + 개"></span>
+                    <span th:text="${profileMember.writtenPosts} + 개"></span>
                 </p>
                 <p>
                     <label>작성한 댓글</label>
-                    <span th:text="${member.writtenComments} + 개"></span>
+                    <span th:text="${profileMember.writtenComments} + 개"></span>
                 </p>
                 <div th:if="${owner == true}" class="row text-end py-5">
                     <a th:href="@{/setting/profile}"><button class="btn btn-primary">계정 설정하기</button></a>
