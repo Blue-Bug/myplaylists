@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head th:replace="fragments.html::head"></head>
+<body>
+    <div class="container">
+        <div th:replace="fragments.html::main_nav"></div>
+        <h1 class="text-center">재생목록 작성하기</h1>
+        <div class="row justify-content-center py-5">
+            <div class="col-md-6">
+                <form th:action="@{/posts/create}" method="post" th:object="${postsForm}">
+                    <div class="pb-4">
+                        <small for="title">제목</small>
+                        <input class="form-control" id="title" th:field="*{title}"/>
+                    </div>
+                    <div class="pb-4">
+                        <small for="description">설명</small>
+                        <input class="form-control" id="description" th:field="*{description}"/>
+                    </div>
+                    <div class="container border" id="content">
+
+                    </div>
+                    <button class="btn btn-primary" type="submit">작성 완료</button>
+                </form>
+                <button id="yt_playlist_btn" type="button" class="btn btn-danger mt-3">유튜브 재생목록 추가</button>
+            </div>
+        </div>
+
+    </div>
+<script type="application/javascript" th:inline="javascript">
+    var count = 0;
+    $(document).ready(function(){
+         $("#yt_playlist_btn").click(function(){
+             var playlist = '<div class="accordion py-5">\
+                            <div class="accordion-item">\
+                                <h2 class="accordion-header">\
+                                    <button class="accordion-button collapsed bg-danger" type="button" data-bs-toggle="collapse" id="accordion'+count+'"\
+                                            data-bs-target="#flush-collapse'+count+'" aria-expanded="false" aria-controls="flush-collapse'+count+'">\
+                                        <input type="text" value="Y" name="playlistsForms['+count+'].playlistType" hidden/>\
+                                        <div class="row">\
+                                            <label class="text-white">제목</label>\
+                                            <input class="form-control col-md-6" type="text" name="playlistsForms['+count+'].playlistTitle"/>\
+                                            <label class="text-white">설명</label>\
+                                            <input class="form-control" type="text" name="playlistsForms['+count+'].playlistDescription"/>\
+                                        </div>\
+                                    </button>\
+                                </h2>\
+                                <div id="flush-collapse'+count+'" class="accordion-collapse collapse" data-bs-parent="#accordion'+count+'">\
+                                    <div class="accordion-body row">\
+                                        <div class="col-6">\
+                                            <input class="form-control" type="text" name="playlistsForms['+count+'].links[0]"/>\
+                                        </div>\
+                                        <div class="col-6">\
+                                            <button class="btn btn-primary" id="add_link_btn" type="button">추가</button>\
+                                        </div>\
+                                    </div>\
+                                </div>\
+                            </div>\
+                        </div>';
+             $('#content').append(playlist);
+             count=count+1;
+        });
+    });
+</script>
+</body>
+</html>

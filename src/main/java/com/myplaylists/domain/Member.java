@@ -2,10 +2,10 @@ package com.myplaylists.domain;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity @EqualsAndHashCode(of="id")
@@ -13,6 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor @NoArgsConstructor
 public class Member {
     @Id @GeneratedValue
+    @Column(name = "member_id")
     private Long id;
 
     private String nickname;
@@ -35,6 +36,9 @@ public class Member {
 
     private Long writtenComments = 0L;
 
+    @OneToMany(mappedBy = "postsOwner")
+    private List<Posts> posts = new ArrayList<>();
+
     public void generateToken() {
         this.token = UUID.randomUUID().toString();
         this.tokenGeneratedAt = LocalDateTime.now();
@@ -43,5 +47,9 @@ public class Member {
     public void checkEmailVerified() {
         this.emailVerified = true;
         this.joinedAt = LocalDateTime.now();
+    }
+
+    public void addWrittenPosts() {
+        this.writtenPosts += 1;
     }
 }
