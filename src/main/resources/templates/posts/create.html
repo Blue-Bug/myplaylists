@@ -30,36 +30,53 @@
     var count = 0;
     $(document).ready(function(){
          $("#yt_playlist_btn").click(function(){
-             var playlist = '<div class="accordion py-5">\
+             var playlist = '<div id="playlist'+count+'" class="accordion py-5">\
                             <div class="accordion-item">\
                                 <h2 class="accordion-header">\
                                     <button class="accordion-button collapsed bg-danger" type="button" data-bs-toggle="collapse" id="accordion'+count+'"\
                                             data-bs-target="#flush-collapse'+count+'" aria-expanded="false" aria-controls="flush-collapse'+count+'">\
-                                        <input type="text" value="Y" name="playlistsForms['+count+'].playlistType" hidden/>\
+                                        <input type="text" value="Y" name="playlistsForm.playlistType" hidden/>\
                                         <div class="row">\
                                             <label class="text-white">제목</label>\
-                                            <input class="form-control col-md-6" type="text" name="playlistsForms['+count+'].playlistTitle"/>\
+                                            <input class="form-control col-md-6" type="text" name="playlistsForm.playlistTitle"/>\
                                             <label class="text-white">설명</label>\
-                                            <input class="form-control" type="text" name="playlistsForms['+count+'].playlistDescription"/>\
+                                            <input class="form-control" type="text" name="playlistsForm.playlistDescription"/>\
                                         </div>\
                                     </button>\
                                 </h2>\
                                 <div id="flush-collapse'+count+'" class="accordion-collapse collapse" data-bs-parent="#accordion'+count+'">\
-                                    <div class="accordion-body row">\
-                                        <div class="col-6">\
-                                            <input class="form-control" type="text" name="playlistsForms['+count+'].links[0]"/>\
-                                        </div>\
-                                        <div class="col-6">\
-                                            <button class="btn btn-primary" id="add_link_btn" type="button">추가</button>\
+                                    <div class="accordion-body row" id="playlistBody'+count+'">\
+                                        <div>\
+                                            <button class="btn btn-primary mb-2" id="playlist'+ count +'add_link_btn" type="button">링크 추가</button>\
+                                            <button class="btn btn-danger mb-2" id="playlist'+count+'remove_link_btn" type="button">아래부터 삭제</button>\
                                         </div>\
                                     </div>\
                                 </div>\
                             </div>\
                         </div>';
+
+
              $('#content').append(playlist);
-             count=count+1;
+             addLinkList(count);
+             removeLinkList(count);
+
+             count = count + 1;
         });
     });
+    function addLinkList(index){
+        $('#playlist'+index+'add_link_btn').click(function(){
+              var addLink = '<div id="playlistLink'+index+'">\
+                                    <input class="form-control mb-2" type="text" name="playlistsForms.links"/>\
+                               </div>';
+
+              $('#playlistBody'+index).append(addLink);
+         });
+    }
+     function removeLinkList(index){
+        $('#playlist'+index+'remove_link_btn').click(function(){
+              $('#playlistLink'+index+':last-child').remove();
+         });
+    }
 </script>
 </body>
 </html>
