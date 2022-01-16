@@ -1,5 +1,6 @@
 package com.myplaylists.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -32,11 +33,8 @@ public class Member {
 
     private String introduce;
 
-    private Long writtenPosts = 0L;
-
-    private Long writtenComments = 0L;
-
     @OneToMany(mappedBy = "postsOwner")
+    @JsonBackReference
     private List<Posts> posts = new ArrayList<>();
 
     public void generateToken() {
@@ -47,9 +45,5 @@ public class Member {
     public void checkEmailVerified() {
         this.emailVerified = true;
         this.joinedAt = LocalDateTime.now();
-    }
-
-    public void addWrittenPosts() {
-        this.writtenPosts += 1;
     }
 }

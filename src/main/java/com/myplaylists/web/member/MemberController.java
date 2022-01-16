@@ -1,24 +1,21 @@
 package com.myplaylists.web.member;
 
 import com.myplaylists.domain.Member;
+import com.myplaylists.domain.Posts;
 import com.myplaylists.web.member.form.LoginForm;
-import com.myplaylists.web.setting.form.PasswordForm;
+import com.myplaylists.web.posts.PostsRepository;
 import com.myplaylists.web.member.form.SignUpForm;
 import com.myplaylists.web.member.validator.SignUpFormValidator;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.security.web.server.authentication.logout.SecurityContextServerLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
@@ -27,6 +24,7 @@ public class MemberController {
     private final SignUpFormValidator signUpFormValidator;
     private final MemberService memberService;
     private final MemberRepository memberRepository;
+    private final PostsRepository postsRepository;
 
     @InitBinder("signUpForm")
     public void signUpFormValidator(WebDataBinder webDataBinder){
@@ -72,12 +70,13 @@ public class MemberController {
             return "member/profile";
         }
         if(member != null){
-            model.addAttribute(member);
-            if(member.getNickname().equals(nickname)){
+            if(member.getNickname().equals(nickname)) {
                 model.addAttribute("owner",true);
             }
         }
+        Optional<List<Posts>> byPostsOwner = postsRepository.findByPostsOwner(profileMember);
         model.addAttribute("profileMember",profileMember);
+        model.addAttribute("writtenPosts",byPostsOwner.get().size());
         return "member/profile";
     }
 }

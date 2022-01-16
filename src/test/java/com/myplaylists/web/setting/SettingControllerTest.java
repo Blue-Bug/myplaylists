@@ -78,7 +78,6 @@ class SettingControllerTest {
         mockMvc.perform(get("/profile/jun"))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("owner",true))
-                .andExpect(model().attributeExists("member"))
                 .andExpect(model().attributeExists("profileMember"))
                 .andExpect(view().name("member/profile"));
     }

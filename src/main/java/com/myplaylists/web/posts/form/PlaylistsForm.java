@@ -18,10 +18,10 @@ public class PlaylistsForm {
     private String playlistType;
 
     @NotBlank
-    @Length(max=10)
+    @Length(max=20)
     private String playlistTitle;
 
-    @Length(max=20)
+    @Length(max=30)
     private String playlistDescription;
 
     @NotEmptyElement(message = "비어 있는 링크가 있습니다.")

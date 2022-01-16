@@ -4,61 +4,152 @@
 <body>
     <div class="container">
         <div th:replace="fragments.html::main_nav"></div>
+
         <div class="row justify-content-center py-5">
-            <u class="container row col-md-10"><h1 th:text="${posts.title}"></h1></u>
-            <div class="row">
-                <div class="container border col-md-7">
-                    <th:block th:each="playlist,playlistStat : ${posts.playlists}">
-                        <div class="accordion py-5">
-                            <div class="accordion-item">
-                                <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" th:id="|accordion${playlistStat.index}|"
-                                            th:data-bs-target="|#flush-collapse${playlistStat.index}|" aria-expanded="false" th:aria-controls="|flush-collapse${playlistStat.index}|"
-                                            th:classappend="${playlist.playlistType} == Y? bg-danger:bg-success">
-                                        <div class="row">
-                                            <b><small class="text-white" th:text="${playlist.title}">플레이리스트 제목</small></b>
-                                            <small class="text-white mt-3" th:text="${playlist.description}">플레이리스트 설명</small>
-                                        </div>
-                                    </button>
-                                </h2>
-                                <div th:id="|flush-collapse${playlistStat.index}|" class="accordion-collapse collapse" th:data-bs-parent="|#accordion${playlistStat.index}|">
-                                    <th:block th:each="link : ${playlist.links}">
-                                        <div class="accordion-body">
-                                            <!-- iframe으로 영상 삽입 -->
-                                            <iframe class="dropdown-item" type="text/html" width="640" height="500"
-                                                    th:src="|https://www.youtube.com/embed/${link.link}|"
-                                                    src="https://www.youtube.com/embed/0xGJx6qsNCY"
-                                                    frameborder="0"
-                                                    allowfullscreen></iframe>
-                                        </div>
-                                    </th:block>
+
+            <div class="row col-md-10 mb-3">
+                <div class="col">
+                    <i class="bi bi-lg bi-play-btn-fill me-2" style="font-size:30px; "></i><text class="fs-2" th:text="${posts.title}"></text>
+                </div>
+                <div class="mb-1 mx-3">
+                    <i class="bi bi-person me-2"></i><span th:text="${posts.postsOwner.nickname}"></span>
+                </div>
+                <div class="mb-1 mx-3">
+                    <i class="bi bi-clock me-1"></i>
+                    <span class="col-md-3 me-3" th:text="|작성일 : ${#temporals.format(posts.createdAt,'yyyy-MM-dd HH:mm')}|"></span>
+                </div>
+                <div class="mb-1 mx-3">
+                    <i class="bi bi-clock-history me-1"></i>
+                    <span class="col-md-3" th:text="|수정일 : ${#temporals.format(posts.modifiedAt,'yyyy-MM-dd HH:mm')}|"></span>
+                </div>
+                <hr class="mt-2"/>
+            </div>
+            <div class="row col-md-10">
+                <div class="border col-8 bg-dark rounded">
+                    <div class="alert alert-primary mt-5" role="alert">
+                        <small th:if="${posts.description}!=''" th:text="${posts.description}"></small>
+                        <small th:unless="${posts.description}!=''">플레이리스트에 대한 설명이 없습니다.</small>
+                    </div>
+                    <div id="playerPlaceHolder">
+
+                    </div>
+
+                </div>
+                <div class="border col-4 rounded">
+                    <button type="button" class="btn btn-danger mt-3" th:if="${owner}==true" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        삭제하기
+                    </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog  modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">모든 플레이리스트 삭제</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    정말로 삭제하시겠습니까?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+
+                                    <form th:action="|/posts/${posts.id}/remove|" method="post">
+                                        <button class="btn btn-danger" type="submit">삭제하기</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
-                    </th:block>
-                </div>
-                <div class="border col-md-3">
-                    <p class="pt-3">
-                        <b><label>작성자</label></b>
-                        <div class="row">
-                            <div>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
-                                    <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>
-                                </svg>
-                                <span th:text="${posts.postsOwner.nickname}"></span>
+                    </div>
+
+                    <th:block th:each="playlist,playlistStat : ${posts.playlists}">
+                        <button class="btn w-100 my-4" type="button" th:id="|playlist_${playlistStat.index}|"
+                                th:classappend="${playlist.playlistType} == Y? btn-outline-danger:btn-outline-success">
+                            <div class="container">
+                                <b><small class="row" th:text="${playlist.title}">플레이리스트 제목</small></b>
+                                <small class="row mt-3" th:text="${playlist.description}">플레이리스트 설명</small>
                             </div>
-                        </div>
-                    </p>
-                    <p>
-                        <b><label>설명</label></b>
-                        <div class="row">
-                          <small th:text="${posts.description}"></small>
-                        </div>
-                    </p>
+                        </button>
+                    </th:block>
                 </div>
             </div>
         </div>
 
     </div>
+
+
+    <script type="application/javascript" th:inline="javascript">
+        var totalItems;
+        var currentIndex;
+        $(document).ready(function(){
+            [# th:each="playlist,playlistStat : ${posts.playlists}"]
+                $('#playlist_[[${playlistStat.index}]]').click(function(){
+                    replacePlaylist([[${playlist.links}]],[[${playlistStat.index}]])
+                });
+            [/]
+
+        });
+
+
+        function replacePlaylist(links,index){
+            var playlist = '<div id="myCarousel" class="carousel slide"  data-bs-interval="false" data-bs-ride="carousel">\
+                        <div class="carousel-inner">';
+            $.each (links, function (index, link) {
+                var isActive = 'carousel-item';
+                var src = 'https://www.youtube.com/embed/';
+                if(index === 0){
+                    isActive += ' active';
+                }
+                if(link.link.startsWith('PL')){
+                    src += '?listType=playlist&list=';
+                }
+                src += link.link;
+                playlist +=
+                '<div class="'+isActive+'">\
+                    <span>\
+                        <iframe class="d-block w-100" type="text/html" width="640" height="500"\
+                           src="'+src+'"\
+                           frameborder="0"\
+                           allowfullscreen></iframe>\
+                    </span>\
+                </div>';
+            });
+
+
+            playlist += '</div>\
+                <div class="row justify-content-center">\
+                    <button id="prev" class="btn col-1 bg-transparent" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">\
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>\
+                        <span class="visually-hidden">Previous</span>\
+                    </button>\
+                    <span id="carousel-index" class="col-1 text-white text-center pt-2">i/d</span>\
+                    <button id="next" class="btn col-1 bg-transparent" type="button" data-bs-target="#myCarousel" data-bs-slide="next">\
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>\
+                        <span class="visually-hidden">Next</span>\
+                    </button>\
+                </div>\
+            </div>';
+
+            $('#playerPlaceHolder *').remove();
+            $('#playerPlaceHolder').append(playlist);
+
+
+            totalItems = $('.carousel-item').length;
+            currentIndex =$('div.carousel-item.active').index() + 1;
+
+            $('#carousel-index').text(''+currentIndex+'/'+totalItems+'');
+
+            $("#next").click(function(){
+                if(totalItems == 1) return;
+                currentIndex = $('div.carousel-item.carousel-item-next').index()+1;
+                $('#carousel-index').text(''+currentIndex+'/'+totalItems+'');
+            });
+
+            $("#prev").click(function(){
+                if(totalItems == 1) return;
+                currentIndex = $('div.carousel-item.carousel-item-prev').index()+1;
+                $('#carousel-index').text(''+currentIndex+'/'+totalItems+'');
+            });
+        }
+    </script>
 </body>
 </html>

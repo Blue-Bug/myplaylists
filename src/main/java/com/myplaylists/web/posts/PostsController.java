@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.util.Optional;
@@ -28,7 +29,6 @@ public class PostsController {
     @GetMapping("/posts/create")
     public String createPostsForm(@CurrentUser Member member, Model model){
         PostsForm postsForm = new PostsForm();
-        model.addAttribute(member);
         model.addAttribute("postsForm",postsForm);
         return "posts/create";
     }
@@ -49,23 +49,19 @@ public class PostsController {
             model.addAttribute("error","존재하지 않는 포스트 입니다.");
             return "redirect:/";
         }
+        if(posts.get().getPostsOwner().equals(member)){
+            model.addAttribute("owner",true);
+        }
         model.addAttribute("posts",posts.get());
+
         return "posts/read";
     }
 
-    @GetMapping("/posts/{id}/edit")
-    public String editPostsForm(){
-        return "posts/edit";
-    }
-
-    @PostMapping("/posts/{id}/edit")
-    public String editPosts(){
-        //update
-        return "";
-    }
-
     @PostMapping("/posts/{id}/remove")
-    public String removePosts(){
+    public String removePosts(@CurrentUser Member member, @PathVariable("id") String postsId, RedirectAttributes redirectAttributes){
+        if(!postsService.deletePosts(member,postsId)){
+            redirectAttributes.addFlashAttribute("error","잘못된 요청입니다.");
+        }
         return "redirect:/";
     }
 

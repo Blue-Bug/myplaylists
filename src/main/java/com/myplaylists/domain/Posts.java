@@ -1,9 +1,11 @@
 package com.myplaylists.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.myplaylists.web.posts.form.PostsForm;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,7 @@ public class Posts {
 
     private String title;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "member_id")
     private Member postsOwner;
 
@@ -27,7 +29,12 @@ public class Posts {
 
     private Long favorite = 0L;
 
+    private LocalDateTime createdAt;
+
+    private LocalDateTime modifiedAt;
+
     @OneToMany(mappedBy = "posts",cascade = CascadeType.ALL)
+    @JsonBackReference
     List<Playlist> playlists = new ArrayList<>();
 
     //생성 메서드
@@ -36,6 +43,8 @@ public class Posts {
         posts.setPostsOwner(postsOwner);
         posts.setTitle(title);
         posts.setDescription(description);
+        posts.setCreatedAt(LocalDateTime.now());
+        posts.setModifiedAt(LocalDateTime.now());
         
         for(Playlist playlist : playlists){
             posts.addPlaylist(playlist);

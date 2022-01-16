@@ -1,5 +1,6 @@
 package com.myplaylists.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.myplaylists.domain.Playlist;
 import lombok.*;
 import org.springframework.security.core.parameters.P;
@@ -13,8 +14,9 @@ public class Link {
     @Id @GeneratedValue
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name="playlist_id")
+    @JsonBackReference
     private Playlist playlist;
 
     private String link;

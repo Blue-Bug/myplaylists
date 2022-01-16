@@ -26,11 +26,11 @@
                 </p>
                 <p>
                     <label>작성한 글</label>
-                    <span th:text="${profileMember.writtenPosts} + 개"></span>
+                    <span th:text="${writtenPosts} + 개"></span>
                 </p>
                 <p>
                     <label>작성한 댓글</label>
-                    <span th:text="${profileMember.writtenComments} + 개"></span>
+                    <span th:text="${writtenComments} + 개"></span>
                 </p>
                 <div th:if="${owner == true}" class="row text-end py-5">
                     <a th:href="@{/setting/profile}"><button class="btn btn-primary">계정 설정하기</button></a>

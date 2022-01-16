@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class PostsService {
 
     private final PostsRepository postsRepository;
@@ -44,16 +46,32 @@ public class PostsService {
             playlists.add(playlist);
         }
 
-        Posts posts = Posts.createPosts(member, postsForm.getTitle(),
-                postsForm.getDescription(), playlists);
+        Member byNickname = memberRepository.findByNickname(member.getNickname());
 
-        //작성한 글 증가
-        memberRepository.findByNickname(member.getNickname()).addWrittenPosts();
+        Posts posts = Posts.createPosts(byNickname, postsForm.getTitle(),
+                postsForm.getDescription(), playlists);
 
         return postsRepository.save(posts);
     }
 
+    @Transactional(readOnly = true)
     public Optional<Posts> getPosts(String postsId) {
         return postsRepository.findById(Long.parseLong(postsId));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Posts> getAllPosts() {
+        return postsRepository.findAll();
+    }
+
+    public boolean deletePosts(Member member,String postsId) {
+        Optional<Posts> posts = getPosts(postsId);
+
+        if(posts.isEmpty()) return false;
+        Member postsOwner = memberRepository.findByNickname(member.getNickname());
+        if(!posts.get().getPostsOwner().equals(postsOwner)) return false;
+
+        postsRepository.delete(posts.get());
+        return true;
     }
 }

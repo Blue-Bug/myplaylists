@@ -14,8 +14,7 @@ public class Playlist {
     @Column(name ="playlist_id")
     private Long id;
 
-    //Lazy로 해야 스택오버플로우가 발생하지 않는다.
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "posts_id")
     private Posts posts;
 

@@ -7,7 +7,80 @@
         <div th:if="${message}">
             <span th:text="${message}"></span>
         </div>
-        <h1>메인 화면</h1>
+        <div class="row">
+            <div class="container col-8">
+                <th:block th:each="post,postsStat : ${posts}">
+                    <div class="row mb-4">
+                        <div class="accordion" id="accordionExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" th:id="|posts${postsStat.index}|">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                            th:data-bs-target="|#collapse${postsStat.index}|" aria-expanded="false">
+                                        <div class="row">
+                                            <div class="col mb-1">
+                                                <i class="bi bi-play-btn-fill"></i>
+                                                <text class="fs-4" th:text="${post.title}"></text>
+                                            </div>
+                                            <div class="mb-2">
+                                                <i class="bi bi-person"> <span th:text="${post.postsOwner.nickname}"></span></i>
+                                            </div>
+                                            <div>
+                                                <i class="bi bi-clock"></i>
+                                                <span class="col-md-3 me-3" th:text="|${#temporals.format(post.createdAt,'yyyy-MM-dd HH:mm')}|"></span>
+                                                <i class="bi bi-clock-history"></i>
+                                                <span class="col-md-3" th:text="|${#temporals.format(post.modifiedAt,'yyyy-MM-dd HH:mm')}|"></span>
+                                            </div>
+                                        </div>
+                                    </button>
+                                </h2>
+                                <div th:id="|collapse${postsStat.index}|" class="accordion-collapse collapse" th:data-bs-parent="|#posts${postsStat.index}|">
+                                    <div class="accordion-body bg-black border rounded-bottom border-dark">
+                                        <div th:id="|myCarousel${postsStat.index}|" class="carousel slide"  data-bs-interval="false" data-bs-ride="carousel">
+                                            <div class="carousel-inner">
+                                                <th:block th:each="playlist,playlistStat : ${post.playlists}">
+                                                    <th:block th:each="link,linkStat : ${playlist.links}">
+                                                        <div class="carousel-item" th:classappend="${playlistStat.index == 0 && linkStat.index  == 0}? active : ''">
+                                                            <!-- iframe으로 영상 삽입 -->
+                                                            <span th:if="${#strings.startsWith(link.link,'PL')}">
+                                                               <iframe class="d-block w-100" type="text/html" width="640" height="500"
+                                                                       th:src="|https://www.youtube.com/embed/?listType=playlist&list=${link.link}|"
+                                                                       frameborder="0"
+                                                                       allowfullscreen></iframe>
+                                                            </span>
+                                                            <span th:unless="${#strings.startsWith(link.link,'PL')}">
+                                                                <iframe class="d-block w-100" type="text/html" width="640" height="500"
+                                                                        th:src="|https://www.youtube.com/embed/${link.link}|"
+                                                                        frameborder="0"
+                                                                        allowfullscreen></iframe>
+                                                            </span>
+                                                        </div>
+                                                    </th:block>
+                                                </th:block>
+                                            </div>
+                                            <div class="row justify-content-center">
+                                                <button class="btn col-1 bg-transparent" type="button" th:data-bs-target="|#myCarousel${postsStat.index}|" data-bs-slide="prev">
+                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Previous</span>
+                                                </button>
+                                                <button class="btn col-1 bg-transparent" type="button" th:data-bs-target="|#myCarousel${postsStat.index}|" data-bs-slide="next">
+                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Next</span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <a class="btn btn-primary float-end" th:href="@{|/posts/${post.id}|}">열람하기</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </th:block>
+            </div>
+            <div class="container col-4"></div>
+        </div>
+
     </div>
 </body>
 </html>

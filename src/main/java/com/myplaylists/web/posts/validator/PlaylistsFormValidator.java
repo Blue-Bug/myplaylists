@@ -19,6 +19,7 @@ public class PlaylistsFormValidator implements ConstraintValidator<NotEmptyEleme
 
     @Override
     public boolean isValid(List<String> value, ConstraintValidatorContext context) {
+        if(value == null) return false;
         return value.stream().allMatch(e -> e != null && !e.trim().isBlank());
     }
 }
