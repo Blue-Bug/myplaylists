@@ -2,9 +2,16 @@
 <html lang="en" xmlns:th="http://thymeleaf.org">
 <head th:replace="fragments.html::head"></head>
 <body>
-    <div th:if="${error == null}">
-        <span th:text="${member.nickname}"></span>회원님 이메일 인증이 완료되었습니다.
+<div class="container">
+    <div th:replace="fragments.html::main_nav"></div>
+    <div th:if="${error == null}" class="alert alert-primary mt-5 text-center" role="alert">
+        <div >
+            <span th:text="|${member.nickname} 회원님, |"></span> 이메일 인증이 완료되었습니다.
+        </div>
     </div>
-    <div th:if="${error != null}">잘못된 이메일 인증 링크입니다.</div>
+    <div th:if="${error != null}" class="alert alert-danger mt-5 text-center" role="alert">
+        <div>잘못된 이메일 인증 링크입니다.</div>
+    </div>
+</div>
 </body>
 </html>

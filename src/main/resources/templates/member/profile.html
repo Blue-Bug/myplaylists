@@ -12,27 +12,34 @@
     <div th:if="${notExist == null}">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <p>
+                <div class="mt-5 mb-4">
                     <h1 th:text="${profileMember.nickname}"></h1>
-                </p>
+                </div>
                 <p>
-                    <label>자기 소개</label>
+                    <i class="bi bi-person-lines-fill"></i>
+                    <label>자기 소개 : </label>
+                    <small th:if="${profileMember.introduce == ''}">자기 소개를 작성해주세요!</small>
                     <span th:text="${profileMember.introduce}"></span>
                 </p>
+
                 <p>
-                    <label>가입 날짜</label>
-                    <span th:if="${profileMember.joinedAt == null}">이메일 인증을 완료해주세요.</span>
-                    <span th:if="${profileMember.joinedAt != null}" th:text="${profileMember.joinedAt}"></span>
+                    <i class="bi bi-calendar-event"></i>
+                    <label>가입 날짜 : </label>
+                    <small th:if="${profileMember.joinedAt == null}">이메일 인증을 완료해주세요.</small>
+                    <small th:if="${profileMember.joinedAt != null}" th:text="${#temporals.format(profileMember.joinedAt,'yyyy-MM-dd')}"></small>
                 </p>
                 <p>
-                    <label>작성한 글</label>
-                    <span th:text="${writtenPosts} + 개"></span>
+                    <i class="bi bi-journal-text"></i>
+                    <label>작성한 포스트 : </label>
+                    <small th:text="|${writtenPosts} 개|"></small>
                 </p>
                 <p>
-                    <label>작성한 댓글</label>
-                    <span th:text="${writtenComments} + 개"></span>
+                    <i class="bi bi-pencil-square"></i>
+                    <label>작성한 댓글 : </label>
+                    <small>준비 중입니다.</small>
+                    <!--<small th:text="|${writtenComments} 개|"></small>-->
                 </p>
-                <div th:if="${owner == true}" class="row text-end py-5">
+                <div th:if="${owner == true}" class="text-end py-5">
                     <a th:href="@{/setting/profile}"><button class="btn btn-primary">계정 설정하기</button></a>
                 </div>
             </div>

@@ -1,6 +1,9 @@
 package com.myplaylists.web.member;
 
 import com.myplaylists.domain.Member;
+import com.myplaylists.web.config.AppProperties;
+import com.myplaylists.web.mail.EmailContent;
+import com.myplaylists.web.mail.EmailService;
 import com.myplaylists.web.member.form.LoginForm;
 import com.myplaylists.web.member.form.SignUpForm;
 import com.myplaylists.web.setting.form.PasswordForm;
@@ -19,8 +22,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 import java.util.List;
 
 @Service
@@ -33,6 +39,9 @@ public class MemberService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
     private final AuthenticationManager authenticationManager;
+    private final EmailService emailService;
+    private final TemplateEngine templateEngine;
+    private final AppProperties appProperties;
 
     public Member joinProcess(SignUpForm signUpForm) {
         Member newMember = saveNewMember(signUpForm);
@@ -43,7 +52,22 @@ public class MemberService implements UserDetailsService {
     }
 
     private void sendVerifyingEmail(Member member) {
-        log.info("/email-verify?email={}&token={}",member.getEmail(),member.getToken());
+        Context context = new Context();
+
+        context.setVariable("link","/email-verify?token="+member.getToken()+"&email="+member.getEmail());
+        context.setVariable("nickname",member.getNickname());
+        context.setVariable("linkName","이메일 인증 링크");
+        context.setVariable("message","링크를 클릭하여 이메일 인증을 완료해주세요.");
+        context.setVariable("host",appProperties.getHost());
+
+        String message = templateEngine.process("mail/verify-link", context);
+
+        EmailContent emailContent = new EmailContent();
+        emailContent.setTo(member.getEmail());
+        emailContent.setSubject("My Playlists 가입 인증 이메일입니다.");
+        emailContent.setBody(message);
+
+        emailService.sendEmail(emailContent);
     }
 
     private Member saveNewMember(SignUpForm signUpForm) {
