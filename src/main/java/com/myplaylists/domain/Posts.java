@@ -19,7 +19,7 @@ public class Posts {
 
     private String title;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "member_id")
     private Member postsOwner;
 

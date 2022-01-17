@@ -14,7 +14,7 @@ public class Link {
     @Id @GeneratedValue
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="playlist_id")
     @JsonBackReference
     private Playlist playlist;

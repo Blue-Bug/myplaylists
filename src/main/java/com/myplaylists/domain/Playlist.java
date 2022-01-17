@@ -14,7 +14,7 @@ public class Playlist {
     @Column(name ="playlist_id")
     private Long id;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "posts_id")
     private Posts posts;
 

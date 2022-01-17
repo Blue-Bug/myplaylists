@@ -6,7 +6,7 @@
     <div th:replace="fragments.html::main_nav"></div>
     <h1 class="text-center py-5 mb-3">My Playlists Sign Up</h1>
     <div class="row justify-content-center">
-        <form class="needs-validation col-md-8" th:action="@{/sign-up}" method="post" th:object="${signUpForm}" novalidate>
+        <form id="signup_form" class="needs-validation col-md-8" th:action="@{/sign-up}" method="post" th:object="${signUpForm}" novalidate>
             <div class="mb-3">
                 <label for="nickname">닉네임</label>
                 <input class="form-control" type="text" id="nickname" th:field="*{nickname}" required minlength="3" maxlength="20"/>
@@ -44,11 +44,23 @@
                 </div>
             </div>
             <div class="text-end">
-                <button type="submit" class="btn btn-primary">가입하기</button>
+                <button id="signup_btn" type="submit" class="btn btn-primary">가입하기</button>
             </div>
         </form>
     </div>
 </div>
     <script th:replace="fragments.html::form-validation"></script>
+    <script type="application/javascript">
+           $(document).ready(function(){
+                $('#signup_btn').click(function(){
+                    var loading = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>\
+                            가입 중...';
+                    $('#signup_btn').attr('disabled', true);
+                    $('#signup_btn').text('');
+                    $('#signup_btn').append(loading);
+                    $('#signup_form').submit();
+                });
+           });
+    </script>
 </body>
 </html>
