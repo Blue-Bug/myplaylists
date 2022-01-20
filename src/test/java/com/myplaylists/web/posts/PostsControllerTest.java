@@ -684,4 +684,38 @@ class PostsControllerTest {
                 .andExpect(redirectedUrlPattern("**/login"));
     }
 
+
+    @Test
+    @DisplayName("Posts Paging 확인")
+    @WithUserDetails(value = "jun", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    void postsPaging() throws Exception{
+        for(int i = 0; i < 12; i++){
+            mockMvc.perform(post("/posts/create")
+                            .with(csrf())
+                            .param("title","TEST")
+                            .param("description","TESTING...")
+                            .param("playlistsForms[0].playlistTitle","TEST PLAYLIST1")
+                            .param("playlistsForms[0].playlistDescription","TEST PLAYLIST DESCRIPTION1")
+                            .param("playlistsForms[0].playlistType","Y")
+                            .param("playlistsForms[0].links","TEST LINK1"))
+                    .andExpect(status().is3xxRedirection())
+                    .andExpect(redirectedUrlPattern("/posts/**"));
+        }
+
+        //총 페이지가 2개인지 확인
+        mockMvc.perform(get("/"))
+                .andExpect(model().attributeExists("posts"))
+                .andExpect(model().attribute("totalPage",2))
+                .andExpect(status().isOk());
+
+        //2번째 페이지에서 posts가 받아져 오는지 확인
+        mockMvc.perform(get("/").param("page","1"))
+                .andExpect(model().attributeExists("posts"))
+                .andExpect(status().isOk());
+
+        //3번째 페이지에서 posts 요소가 있는지 확인
+        mockMvc.perform(get("/").param("page","2"))
+                .andExpect(model().attributeDoesNotExist("posts"))
+                .andExpect(status().isOk());
+    }
 }

@@ -5,6 +5,8 @@ import com.myplaylists.domain.Posts;
 import com.myplaylists.web.member.CurrentUser;
 import com.myplaylists.web.posts.PostsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,14 +20,17 @@ public class MainController {
     private final PostsService postsService;
 
     @GetMapping("/")
-    public String home(@CurrentUser Member member, Model model) {
+    public String home(@CurrentUser Member member, Model model, Pageable pageable) {
         if(member != null){
             model.addAttribute(member);
         }
-        List<Posts> allPosts = postsService.getAllPosts();
-        if(!allPosts.isEmpty()){
-            model.addAttribute("posts",allPosts);
+
+        Page<Posts> allPosts = postsService.getAllPosts(pageable);
+
+        if(!allPosts.getContent().isEmpty()){
+            model.addAttribute("posts",allPosts.getContent());
         }
+        model.addAttribute("totalPage",allPosts.getTotalPages());
         return "home";
     }
 

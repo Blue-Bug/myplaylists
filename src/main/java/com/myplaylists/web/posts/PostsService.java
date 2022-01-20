@@ -10,6 +10,8 @@ import com.myplaylists.web.posts.form.PostsForm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,8 +62,8 @@ public class PostsService {
     }
 
     @Transactional(readOnly = true)
-    public List<Posts> getAllPosts() {
-        return postsRepository.findAllUsingFetchJoin();
+    public Page<Posts> getAllPosts(Pageable pageable) {
+        return postsRepository.findAllUsingFetchJoin(pageable);
     }
 
     public boolean deletePosts(Member member,String postsId) {
