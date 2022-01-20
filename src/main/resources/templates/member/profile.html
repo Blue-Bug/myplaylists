@@ -18,7 +18,7 @@
                 <p>
                     <i class="bi bi-person-lines-fill"></i>
                     <label>자기 소개 : </label>
-                    <small th:if="${profileMember.introduce == ''}">자기 소개를 작성해주세요!</small>
+                    <small th:if="${profileMember.introduce == '' || profileMember.introduce == null}">자기 소개를 작성해주세요!</small>
                     <span th:text="${profileMember.introduce}"></span>
                 </p>
 

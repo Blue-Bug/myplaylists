@@ -3,6 +3,8 @@ package com.myplaylists.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.myplaylists.web.posts.form.PostsForm;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,7 +21,7 @@ public class Posts {
 
     private String title;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member postsOwner;
 
@@ -34,6 +36,7 @@ public class Posts {
     private LocalDateTime modifiedAt;
 
     @OneToMany(mappedBy = "posts",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SUBSELECT)
     @JsonBackReference
     List<Playlist> playlists = new ArrayList<>();
 

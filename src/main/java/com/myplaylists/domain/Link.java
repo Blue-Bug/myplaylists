@@ -14,7 +14,7 @@ public class Link {
     @Id @GeneratedValue
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="playlist_id")
     @JsonBackReference
     private Playlist playlist;

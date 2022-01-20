@@ -20,10 +20,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .mvcMatchers("/setting/*","/posts/create","/posts/{id}/remove",
                         "/posts/{id}/edit").authenticated()
-                .mvcMatchers("/","/login","/sign-up","/email-verify",
-                        "/posts/{id}").permitAll()
-                .mvcMatchers(HttpMethod.GET,"/profile/*").permitAll()
+                .mvcMatchers("/","/login","/sign-up","/email-verify").permitAll()
+                .mvcMatchers(HttpMethod.GET,"/profile/*","/posts/{id}").permitAll()
                 .anyRequest().denyAll();
+
 
         http.formLogin()
                 .loginPage("/login")

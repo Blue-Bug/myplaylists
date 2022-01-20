@@ -56,12 +56,12 @@ public class PostsService {
 
     @Transactional(readOnly = true)
     public Optional<Posts> getPosts(String postsId) {
-        return postsRepository.findById(Long.parseLong(postsId));
+        return postsRepository.findByIdUsingFetchJoin(Long.parseLong(postsId));
     }
 
     @Transactional(readOnly = true)
     public List<Posts> getAllPosts() {
-        return postsRepository.findAll();
+        return postsRepository.findAllUsingFetchJoin();
     }
 
     public boolean deletePosts(Member member,String postsId) {

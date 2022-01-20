@@ -1,6 +1,8 @@
 package com.myplaylists.domain;
 
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,13 +16,14 @@ public class Playlist {
     @Column(name ="playlist_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "posts_id")
     private Posts posts;
 
     private String playlistType;
 
     @OneToMany(mappedBy = "playlist",cascade = CascadeType.ALL)
+    @Fetch(FetchMode.SUBSELECT)
     private List<Link> links = new ArrayList<>();
 
     private String title;
