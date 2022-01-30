@@ -40,19 +40,50 @@
                                                 <th:block th:each="playlist,playlistStat : ${post.playlists}">
                                                     <th:block th:each="link,linkStat : ${playlist.links}">
                                                         <div class="carousel-item" th:classappend="${playlistStat.index == 0 && linkStat.index  == 0}? active : ''">
-                                                            <!-- iframe으로 영상 삽입 -->
-                                                            <span th:if="${#strings.startsWith(link.link,'PL')}">
-                                                               <iframe class="d-block w-100" type="text/html" width="640" height="500"
-                                                                       th:src="|https://www.youtube.com/embed/?listType=playlist&list=${link.link}|"
-                                                                       frameborder="0"
-                                                                       allowfullscreen></iframe>
-                                                            </span>
-                                                            <span th:unless="${#strings.startsWith(link.link,'PL')}">
-                                                                <iframe class="d-block w-100" type="text/html" width="640" height="500"
-                                                                        th:src="|https://www.youtube.com/embed/${link.link}|"
-                                                                        frameborder="0"
-                                                                        allowfullscreen></iframe>
-                                                            </span>
+                                                            <th:block th:if="${#strings.startsWith(link.link,'https://')}">
+                                                                <span th:if="${#strings.contains(link.link,'tv.naver')}">
+                                                                    <th:block th:if="${#strings.contains(link.link,'/list/')}">
+                                                                        <iframe class="d-block w-100" type="text/html" width="640" height="500"
+                                                                                th:src="${#strings.substringBefore(#strings.replace(link.link,'/v/','/embed/'),'/list')}"
+                                                                                frameborder="0"
+                                                                                allowfullscreen></iframe>
+                                                                    </th:block>
+                                                                    <th:block th:unless="${#strings.contains(link.link,'/list/')}">
+                                                                        <iframe class="d-block w-100" type="text/html" width="640" height="500"
+                                                                                th:src="${#strings.replace(link.link,'/v/','/embed/')}"
+                                                                                frameborder="0"
+                                                                                allowfullscreen></iframe>
+                                                                    </th:block>
+                                                                </span>
+                                                                <span th:if="${#strings.contains(link.link,'youtube')}">
+                                                                     <span th:if="${#strings.contains(link.link,'&list=')}">
+                                                                       <iframe class="d-block w-100" type="text/html" width="640" height="500"
+                                                                               th:src="|https://www.youtube.com/embed/?listType=playlist&list=${#strings.substringAfter(link.link,'&list=')}|"
+                                                                               frameborder="0"
+                                                                               allowfullscreen></iframe>
+                                                                    </span>
+                                                                    <span th:unless="${#strings.contains(link.link,'&list=')}">
+                                                                        <iframe class="d-block w-100" type="text/html" width="640" height="500"
+                                                                                th:src="${#strings.replace(link.link,'watch?v=','embed/')}"
+                                                                                frameborder="0"
+                                                                                allowfullscreen></iframe>
+                                                                    </span>
+                                                                </span>
+                                                            </th:block>
+                                                            <th:block th:unless="${#strings.startsWith(link.link,'https://')}">
+                                                                <span th:if="${#strings.startsWith(link.link,'PL')}">
+                                                                   <iframe class="d-block w-100" type="text/html" width="640" height="500"
+                                                                           th:src="|https://www.youtube.com/embed/?listType=playlist&list=${link.link}|"
+                                                                           frameborder="0"
+                                                                           allowfullscreen></iframe>
+                                                                </span>
+                                                                <span th:unless="${#strings.startsWith(link.link,'PL')}">
+                                                                    <iframe class="d-block w-100" type="text/html" width="640" height="500"
+                                                                            th:src="|https://www.youtube.com/embed/${link.link}|"
+                                                                            frameborder="0"
+                                                                            allowfullscreen></iframe>
+                                                                </span>
+                                                            </th:block>
                                                         </div>
                                                     </th:block>
                                                 </th:block>

@@ -1,6 +1,7 @@
 package com.myplaylists.domain;
 
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Playlist {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name ="playlist_id")
     private Long id;
 
@@ -22,8 +23,7 @@ public class Playlist {
 
     private String playlistType;
 
-    @OneToMany(mappedBy = "playlist",cascade = CascadeType.ALL)
-    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(mappedBy = "playlist")
     private List<Link> links = new ArrayList<>();
 
     private String title;

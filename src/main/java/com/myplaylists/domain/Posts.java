@@ -3,6 +3,7 @@ package com.myplaylists.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.myplaylists.web.posts.form.PostsForm;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -15,7 +16,7 @@ import java.util.List;
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Posts {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name ="posts_id")
     private Long id;
 
@@ -35,8 +36,7 @@ public class Posts {
 
     private LocalDateTime modifiedAt;
 
-    @OneToMany(mappedBy = "posts",cascade = CascadeType.ALL)
-    @Fetch(FetchMode.SUBSELECT)
+    @OneToMany(mappedBy = "posts")
     @JsonBackReference
     List<Playlist> playlists = new ArrayList<>();
 

@@ -95,14 +95,34 @@
                         <div class="carousel-inner">';
             $.each (links, function (index, link) {
                 var isActive = 'carousel-item';
-                var src = 'https://www.youtube.com/embed/';
+                var src;
+
+                if(link.link.includes('youtube')){
+                    src = link.link.replace('watch?v=','embed/');
+                    var isList = src.indexOf('&list=');
+                    if(isList != -1){
+                        src = src.slice(0,isList)+'?listType=playlist'+ src.slice(isList);
+                    }
+                }
+                else if(link.link.includes('tv.naver')){
+                    src = link.link.replace('/v/','/embed/');
+                    var isList = src.indexOf('/list/');
+                    if(isList != -1){
+                        src = src.slice(0,isList);
+                    }
+                }
+                else{
+                    if(link.link.startsWith('PL')){
+                        src = 'https://www.youtube.com/embed/?listType=playlist&list=' + link.link;
+                    }
+                    else{
+                        src = 'https://www.youtube.com/embed/' + link.link;
+                    }
+                }
                 if(index === 0){
                     isActive += ' active';
                 }
-                if(link.link.startsWith('PL')){
-                    src += '?listType=playlist&list=';
-                }
-                src += link.link;
+
                 playlist +=
                 '<div class="'+isActive+'">\
                     <span>\

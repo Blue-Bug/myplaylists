@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,16 +23,20 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-@Transactional
+@Transactional(readOnly = true)
 public class PostsService {
 
     private final PostsRepository postsRepository;
+    private final PlaylistRepository playlistRepository;
+    private final LinkRepository linkRepository;
     private final MemberRepository memberRepository;
     private final ModelMapper modelMapper;
 
+    @Transactional
     public Posts addPosts(PostsForm postsForm, Member member) {
         List<PlaylistsForm> playlistsForms = postsForm.getPlaylistsForms();
         List<Playlist> playlists = new ArrayList<>();
+        List<Link> allLinks = new ArrayList<>();
 
         for(PlaylistsForm playlistsForm : playlistsForms){
             List<Link> links = new ArrayList<>();
@@ -46,6 +51,7 @@ public class PostsService {
                     links);
 
             playlists.add(playlist);
+            allLinks.addAll(links);
         }
 
         Member byNickname = memberRepository.findByNickname(member.getNickname());
@@ -53,27 +59,50 @@ public class PostsService {
         Posts posts = Posts.createPosts(byNickname, postsForm.getTitle(),
                 postsForm.getDescription(), playlists);
 
-        return postsRepository.save(posts);
+        Posts newPosts = postsRepository.saveAndFlush(posts);
+        playlistRepository.saveAll(playlists);
+        linkRepository.saveAll(allLinks);
+
+        return newPosts;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
+    public boolean deletePosts(Member member,String postsId) {
+        Optional<Posts> posts = getPosts(postsId);
+
+        if(posts.isEmpty()){
+            return false;
+        }
+
+        Member postsOwner = memberRepository.findByNickname(member.getNickname());
+
+        if(!posts.get().getPostsOwner().equals(postsOwner)){
+            return false;
+        }
+
+        List<Playlist> playlists = posts.get().getPlaylists();
+        List<Link> links = new ArrayList<>();
+
+        for(Playlist playlist : playlists){
+            links.addAll(playlist.getLinks());
+        }
+
+        linkRepository.deleteAllInBatch(links);
+        playlistRepository.deleteAllInBatch(playlists);
+        postsRepository.delete(posts.get());
+
+        return true;
+    }
+
     public Optional<Posts> getPosts(String postsId) {
         return postsRepository.findByIdUsingFetchJoin(Long.parseLong(postsId));
     }
 
-    @Transactional(readOnly = true)
     public Page<Posts> getAllPosts(Pageable pageable) {
         return postsRepository.findAllUsingFetchJoin(pageable);
     }
 
-    public boolean deletePosts(Member member,String postsId) {
-        Optional<Posts> posts = getPosts(postsId);
-
-        if(posts.isEmpty()) return false;
-        Member postsOwner = memberRepository.findByNickname(member.getNickname());
-        if(!posts.get().getPostsOwner().equals(postsOwner)) return false;
-
-        postsRepository.delete(posts.get());
-        return true;
+    public Page<Posts> searchPosts(String keyword,Pageable pageable) {
+        return postsRepository.findByTitleContaining(keyword,pageable);
     }
 }

@@ -20,7 +20,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .mvcMatchers("/setting/*","/posts/create","/posts/{id}/remove",
                         "/posts/{id}/edit").authenticated()
-                .mvcMatchers("/","/login","/sign-up","/email-verify").permitAll()
+                .mvcMatchers("/","/login","/sign-up","/email-verify","/search").permitAll()
                 .mvcMatchers(HttpMethod.GET,"/profile/*","/posts/{id}").permitAll()
                 .anyRequest().denyAll();
 
@@ -48,6 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
                 .mvcMatchers("/bootstrap/**","/image/**")
+                .antMatchers("/favicon.ico", "/resources/**", "/error")
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 }

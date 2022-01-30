@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -21,10 +22,6 @@ public class MainController {
 
     @GetMapping("/")
     public String home(@CurrentUser Member member, Model model, Pageable pageable) {
-        if(member != null){
-            model.addAttribute(member);
-        }
-
         Page<Posts> allPosts = postsService.getAllPosts(pageable);
 
         if(!allPosts.getContent().isEmpty()){
@@ -37,5 +34,16 @@ public class MainController {
     @GetMapping("/login")
     public String login(){
         return "login";
+    }
+
+    @GetMapping("/search")
+    public String searchPosts(@RequestParam String keyword, Model model, Pageable pageable){
+        Page<Posts> filteredPosts = postsService.searchPosts(keyword,pageable);
+
+        if(!filteredPosts.getContent().isEmpty()){
+            model.addAttribute("posts",filteredPosts.getContent());
+        }
+        model.addAttribute("totalPage",filteredPosts.getTotalPages());
+        return "home";
     }
 }

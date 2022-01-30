@@ -13,7 +13,7 @@ import java.util.UUID;
 @Getter @Setter @Builder
 @AllArgsConstructor @NoArgsConstructor
 public class Member {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "member_id")
     private Long id;
 

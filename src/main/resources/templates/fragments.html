@@ -26,12 +26,11 @@
         <a href="/"><img  src="/image/My_Playlists_Logo.png" width="200"/></a>
     </div>
 
-    <form class="col-md-6 justify-content-center">
+    <form class="col-md-6 justify-content-center" action="/search" method="get">
         <div class="input-group">
-            <input type="search" class="form-control" placeholder="원하는 컨텐츠를 검색해보세요." aria-label="Search"/>
+            <input name="keyword" type="search" class="form-control" placeholder="원하는 컨텐츠를 검색해보세요." aria-label="Search"/>
             <button class="btn btn-secondary" type="submit" id="button-addon2">검색</button>
         </div>
-
     </form>
     <div class="col-md-3 text-end" sec:authorize="!isAuthenticated()">
         <a class="btn btn-outline-primary me-2" href="/sign-up">회원 가입</a>
