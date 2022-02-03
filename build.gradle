@@ -36,6 +36,9 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 
 	implementation 'org.modelmapper:modelmapper:2.4.2'
+
+	//사용자 속도 제한 API
+	implementation 'com.github.vladimir-bukhtoyarov:bucket4j-core:7.1.0'
 }
 
 test {
