@@ -26,8 +26,8 @@ public class MainController {
 
         if(!allPosts.getContent().isEmpty()){
             model.addAttribute("posts",allPosts.getContent());
+            model.addAttribute("totalPage",allPosts.getTotalPages());
         }
-        model.addAttribute("totalPage",allPosts.getTotalPages());
         return "home";
     }
 
@@ -42,8 +42,8 @@ public class MainController {
 
         if(!filteredPosts.getContent().isEmpty()){
             model.addAttribute("posts",filteredPosts.getContent());
+            model.addAttribute("totalPage",filteredPosts.getTotalPages());
         }
-        model.addAttribute("totalPage",filteredPosts.getTotalPages());
         return "home";
     }
 }

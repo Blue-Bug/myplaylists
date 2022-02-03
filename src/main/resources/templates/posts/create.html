@@ -4,9 +4,8 @@
 <body>
     <div class="container">
         <div th:replace="fragments.html::main_nav"></div>
-        <h1 class="text-center">재생목록 작성하기</h1>
         <div class="row justify-content-center py-5">
-            <div class="col-md-6">
+            <div class="col-6 ms-5 ps-5">
                 <form class="needs-validation" th:action="@{/posts/create}" method="post" th:object="${postsForm}" novalidate>
                     <div class="pb-4">
                         <small for="title">제목</small>
@@ -73,6 +72,16 @@
                     </div>
                 </form>
 
+            </div>
+            <div class="container border rounded col-5 ms-6">
+                <div class="mt-4">
+                    <text class="badge bg-danger text-wrap">유튜브 재생목록 만드는 법</text>
+                    <img src="/image/yt_pl_help.png" class="img-fluid rounded float-start mt-2 mb-4" alt="유튜브 재생목록 만드는 법">
+                </div>
+                <div>
+                    <text class="badge bg-success text-wrap">커스텀 재생목록 만드는 법</text>
+                    <img src="/image/ct_pl_help.png" class="img-fluid rounded float-start mt-2" alt="커스텀 재생목록 만드는 법">
+                </div>
             </div>
         </div>
 

@@ -105,7 +105,12 @@
                     }
                 }
                 else if(link.link.includes('tv.naver')){
-                    src = link.link.replace('/v/','/embed/');
+                    if(link.link.includes('/l/')){
+                        src = link.link + '/sharePlayer';
+                    }
+                    else{
+                        src = link.link.replace('/v/','/embed/');
+                    }
                     var isList = src.indexOf('/list/');
                     if(isList != -1){
                         src = src.slice(0,isList);

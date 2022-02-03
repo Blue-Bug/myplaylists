@@ -50,7 +50,13 @@
                                                                     </th:block>
                                                                     <th:block th:unless="${#strings.contains(link.link,'/list/')}">
                                                                         <iframe class="d-block w-100" type="text/html" width="640" height="500"
+                                                                                th:if="${#strings.contains(link.link,'/v/')}"
                                                                                 th:src="${#strings.replace(link.link,'/v/','/embed/')}"
+                                                                                frameborder="0"
+                                                                                allowfullscreen></iframe>
+                                                                        <iframe class="d-block w-100" type="text/html" width="640" height="500"
+                                                                                th:if="${#strings.contains(link.link,'/l/')}"
+                                                                                th:src="${#strings.append(link.link,'/l/','/sharePlayer')}"
                                                                                 frameborder="0"
                                                                                 allowfullscreen></iframe>
                                                                     </th:block>
@@ -111,7 +117,7 @@
             </div>
             <div class="container col-4"></div>
         </div>
-        <nav aria-label="Page navigation">
+        <nav aria-label="Page navigation" th:if="${totalPage!=null}">
             <ul class="pagination justify-content-center">
                 <th:block th:each="pageNum :  ${#numbers.sequence(1,totalPage)}">
                     <li class="page-item"><a class="page-link" th:href="|/?page=${pageNum-1}|" th:text="${pageNum}"></a></li>
