@@ -32,10 +32,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.logout().logoutSuccessUrl("/");
 
-        //Https 사용
-        http.requiresChannel()
-                .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
-                .requiresSecure();
 
         //사용자 세션을 1개로 제한
         http.sessionManagement(session -> session
