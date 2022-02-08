@@ -21,8 +21,6 @@ import java.util.List;
 public class MainController {
 
     private final PostsService postsService;
-    private final AppProperties appProperties;
-    private final String herokuApp = "**.herokuapp.**";
 
     @GetMapping("/")
     public String home(@CurrentUser Member member, Model model, Pageable pageable) {
@@ -50,10 +48,4 @@ public class MainController {
         }
         return "home";
     }
-
-    @GetMapping(herokuApp)
-    public String redirectHerokuApp(){
-        return "redirect:/"+appProperties.getHost();
-    }
-
 }

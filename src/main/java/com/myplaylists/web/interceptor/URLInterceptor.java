@@ -15,11 +15,13 @@ public class URLInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String requestURI = request.getRequestURI();
-        if(requestURI.contains("herokuapp")){
+        String requestURL = request.getRequestURL().toString();
+
+        if(requestURL.contains("herokuapp")){
             response.sendRedirect(appProperties.getHost());
             return false;
         }
+
         return true;
     }
 
