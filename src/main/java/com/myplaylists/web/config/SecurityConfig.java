@@ -1,5 +1,6 @@
 package com.myplaylists.web.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +15,11 @@ import org.springframework.stereotype.Component;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final AppProperties appProperties;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
@@ -28,6 +33,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin()
                 .loginPage("/login")
                 .successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
+                .defaultSuccessUrl(appProperties.getHost())
+                .failureUrl(appProperties.getHost()+"/login?error")
                 .permitAll();
 
         http.logout().logoutSuccessUrl("/");
