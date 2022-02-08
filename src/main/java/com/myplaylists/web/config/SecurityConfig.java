@@ -30,10 +30,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
                 .permitAll();
 
-        //login 페이지 https 강제
-        http.requiresChannel()
-                .antMatchers("/login*").requiresSecure();
-
         http.logout().logoutSuccessUrl("/");
 
 
