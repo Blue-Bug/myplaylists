@@ -2,7 +2,6 @@ package com.myplaylists.web.main;
 
 import com.myplaylists.domain.Member;
 import com.myplaylists.domain.Posts;
-import com.myplaylists.web.config.AppProperties;
 import com.myplaylists.web.member.CurrentUser;
 import com.myplaylists.web.posts.PostsService;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.annotation.PostConstruct;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor

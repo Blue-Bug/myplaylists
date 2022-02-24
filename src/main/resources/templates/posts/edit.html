@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head th:replace="fragments.html::head"></head>
+<body>
+    <div class="container">
+        <div th:replace="fragments.html::main_nav"></div>
+        <div class="row justify-content-center py-5">
+            <div class="col-6 ms-5 ps-5">
+                <form class="needs-validation" th:action="|/posts/${postsId}/edit|" method="post" th:object="${postsEditForm}" novalidate>
+                    <span>
+                        <div class="pb-4">
+                            <small for="title">제목</small>
+                            <input class="form-control" id="title" th:field="*{title}" type="text"
+                                   required/>
+                            <div class="invalid-feedback">Post 제목을 입력하세요.</div>
+                            <div>
+                                <small class="text-danger" th:if="${#fields.hasErrors('title')}"
+                                       th:errors="*{title}"></small>
+                            </div>
+                        </div>
+                        <div class="pb-4">
+                            <small for="description">설명</small>
+                            <input class="form-control" id="description" type="text"
+                                   th:field="*{description}"/>
+                            <div>
+                                <small class="text-danger" th:if="${#fields.hasErrors('description')}"
+                                       th:errors="*{description}"></small>
+                            </div>
+                        </div>
+                    </span>
+
+                    <div class="container border" id="content">
+                        <th:block th:each="playlist,playlistStat : ${postsEditForm.playlistsEditForms}">
+                            <div th:id="|playlist_${playlistStat.index}|" class="accordion py-5">
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                        <!--Playlist 부분-->
+                                        <button class="p-3 btn text-start" type="button" th:id="|accordion_${playlistStat.index}|"
+                                                th:classappend="${playlist.playlistType} == Y? bg-danger:bg-success"
+                                                data-bs-target="#flush-collapse0" aria-expanded="true">
+                                            <input th:id="|playlist_${playlistStat.index}_id|" th:value="${playlist.id}" type="number"
+                                                   th:name ="|playlistsEditForm.id|" hidden required/>
+                                            <input th:id="|playlist_${playlistStat.index}_type|" type="text" th:value="${playlist.playlistType}"
+                                                   th:name ="|playlistsEditForm.playlistType|" hidden required/>
+                                            <input th:id="|playlist_${playlistStat.index}_link_cnt|" th:value="${playlist.links.size()}" type="number"
+                                                   name="playlistsEditForm.link_cnt" hidden required>
+                                            <div class="row">
+                                                <div class="text-end">
+                                                    <a type="button" th:id="|playlist_${playlistStat.index}_remove_btn|" class="btn-light btn-close" data-bs-dismiss="alert" aria-label="Close"></a>
+                                                </div>
+                                                <label class="text-white">제목</label>
+                                                <div class="col-8">
+                                                    <input class="form-control" type="text" name ="playlistsEditForm.title"
+                                                           th:value="${playlist.title}" required/>
+                                                    <div class="invalid-feedback text-white">플레이리스트 제목을 입력하세요.</div>
+                                                    <div>
+                                                        <small class="text-white" th:if="${#fields.hasErrors('playlistsEditForms[__${playlistStat.index}__].title')}"
+                                                               th:errors="*{playlistsEditForms[__${playlistStat.index}__].title}"></small>
+                                                    </div>
+                                                </div>
+                                                <div class="col-4">
+                                                    <a th:id="|playlist_${playlistStat.index}_change_type_btn|"
+                                                       class="btn btn-warning" type="button">타입 전환</a>
+                                                </div>
+
+                                                <div>
+                                                    <label class="text-white">설명</label>
+                                                    <input class="form-control" type="text" name ="playlistsEditForm.description"
+                                                           th:value="${playlist.description}"/>
+                                                    <div>
+                                                        <small class="text-white" th:if="${#fields.hasErrors('playlistsEditForms[__${playlistStat.index}__].description')}"
+                                                               th:errors="*{playlistsEditForms[__${playlistStat.index}__].description}"></small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </button>
+                                    </h2>
+                                    <div id="flush-collapse0" class="accordion-collapse" th:data-bs-parent="|#accordion_${playlistStat.index}|">
+                                        <div class="accordion-body row" th:id="|playlist_${playlistStat.index}_links|">
+                                            <!--Link 부분-->
+                                            <div>
+                                                <button class="btn btn-primary mb-2" th:id="|playlist_${playlistStat.index}_add_link_btn|" type="button">링크 추가</button>
+                                                <button class="btn btn-danger mb-2" th:id="|playlist_${playlistStat.index}_remove_link_btn|" type="button">아래부터 삭제</button>
+                                            </div>
+                                            <th:block th:each="link,linkStat : ${playlist.links}">
+                                                <div th:id="|playlist_${playlistStat.index}_link|">
+                                                    <input class="form-control mb-2" type="text" th:value="${link}"
+                                                           name ="playlistsEditForm.links" required/>
+
+                                                    <div class="invalid-feedback">링크를 입력하세요.</div>
+                                                    <div>
+                                                        <small class="text-danger" th:if="${#fields.hasErrors('playlistsEditForms[__${playlistStat.index}__].links[__${linkStat.index}__]')}"
+                                                               th:errors="*{playlistsEditForms[__${playlistStat.index}__].links[__${linkStat.index}__]}"></small>
+                                                    </div>
+                                                </div>
+                                            </th:block>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </th:block>
+                    </div>
+
+                    <div class="mt-4">
+                        <button class="btn btn-primary" type="submit">수정 완료</button>
+                        <button class="btn btn-danger float-end" id="yt_playlist_btn" type="button" >유튜브 재생목록 추가</button>
+                    </div>
+                    <div class="mt-4">
+                        <button class="btn btn-success float-end" id="custom_playlist_btn" type="button" >커스텀 재생목록 추가</button>
+                    </div>
+                </form>
+            </div>
+            <div class="container border rounded col-5 ms-6">
+                <div class="mt-4">
+                    <text class="badge bg-danger text-wrap">유튜브 재생목록 만드는 법</text>
+                    <img src="/image/yt_pl_help.png" class="img-fluid rounded float-start mt-2 mb-4" alt="유튜브 재생목록 만드는 법">
+                </div>
+                <div>
+                    <text class="badge bg-success text-wrap">커스텀 재생목록 만드는 법</text>
+                    <img src="/image/ct_pl_help.png" class="img-fluid rounded float-start mt-2" alt="커스텀 재생목록 만드는 법">
+                </div>
+            </div>
+        </div>
+
+    </div>
+<script type="application/javascript" th:inline="javascript">
+    var count = [[${postsEditForm.playlistsEditForms.size()}]];
+    var newIdx = count;
+
+    $(document).ready(function(){
+         for(var i = 0; i < count; i++){
+             addLinkList(i);
+             removeLinkList(i);
+             ListTypeChange(i);
+             removePlaylist(i);
+         }
+
+         $("#yt_playlist_btn").click(function(){addPlaylist('Y');});
+         $("#custom_playlist_btn").click(function(){addPlaylist('C');});
+    });
+
+    function addPlaylist(type){
+         if(count === 10){
+            return;
+         }
+         var color = 'bg-danger';
+         if(type==='C'){
+            color = 'bg-success';
+         }
+         var playlist = '<div id="playlist_'+newIdx+'" class="accordion py-5">\
+                        <div class="accordion-item">\
+                            <h2 class="accordion-header">\
+                                <button class="p-3 btn text-start '+color+'" type="button" id="accordion_'+newIdx+'"\
+                                        data-bs-target="#flush-collapse'+newIdx+'" aria-expanded="true">\
+                                    <input id="playlist_'+newIdx+'_type" type="text" value="'+type+'" name="playlistsEditForm.playlistType" hidden required/>\
+                                    <input id="playlist_'+newIdx+'_id" value="-1" type="number" name="playlistsEditForm.id" hidden required/>\
+                                    <input id="playlist_'+newIdx+'_link_cnt" value="1" type="number"\
+                                           name="playlistsEditForm.link_cnt" hidden required>\
+                                    <div class="row">\
+                                        <div class="text-end">\
+                                            <a type="button" id="playlist_'+newIdx+'_remove_btn" class="btn-light btn-close" data-bs-dismiss="alert" aria-label="Close"></a>\
+                                        </div>\
+                                        <label class="text-white">제목</label>\
+                                        <div class="col-8">\
+                                            <input class="form-control" type="text" name="playlistsEditForm.title" required/>\
+                                        </div>\
+                                        <div class="col-4">\
+                                            <a id="playlist_'+newIdx+'_change_type_btn" class="btn btn-warning" type="button">타입 전환</a>\
+                                        </div>\
+                                        <div>\
+                                            <label class="text-white">설명</label>\
+                                            <input class="form-control" type="text" name="playlistsEditForm.description"/>\
+                                        <div>\
+                                    </div>\
+                                </button>\
+                            </h2>\
+                            <div id="flush-collapse'+count+'" class="accordion-collapse" data-bs-parent="#accordion_'+newIdx+'">\
+                                <div class="accordion-body row" id="playlist_'+newIdx+'_links">\
+                                    <div>\
+                                        <button class="btn btn-primary mb-2" id="playlist_'+ newIdx +'_add_link_btn" type="button">링크 추가</button>\
+                                        <button class="btn btn-danger mb-2" id="playlist_'+newIdx+'_remove_link_btn" type="button">아래부터 삭제</button>\
+                                    </div>\
+                                    <div id="playlist_'+newIdx+'_link">\
+                                        <input class="form-control mb-2" type="text" name="playlistsEditForm.links" required/>\
+                                        <div class="invalid-feedback">링크를 입력하세요.</div>\
+                                    </div>\
+                                </div>\
+                            </div>\
+                        </div>\
+                    </div>';
+
+
+         $('#content').append(playlist);
+         removePlaylist(newIdx);
+         addLinkList(newIdx);
+         removeLinkList(newIdx);
+         ListTypeChange(newIdx);
+         count = count + 1;
+         newIdx = newIdx + 1;
+    }
+
+    function removePlaylist(index){
+        $('#playlist_'+index+'_remove_btn').click(function(){
+            if(count === 1) return;
+            $("#playlist_"+ index).remove();
+            count = count - 1;
+        });
+    }
+
+    function addLinkList(index){
+        $('#playlist_'+index+'_add_link_btn').click(function(){
+              var addLink = '<div id="playlist_'+index+'_link">\
+                                    <input class="form-control mb-2" type="text" name="playlistsEditForm.links" required/>\
+                                    <div class="invalid-feedback">링크를 입력하세요.</div>\
+                               </div>';
+
+
+              $('#playlist_'+index+'_link_cnt').val(parseInt($('#playlist_'+index+'_link_cnt').val())+1);
+
+              $('#playlist_'+index+'_links').append(addLink);
+         });
+    }
+
+    function removeLinkList(index){
+        $('#playlist_'+index+'_remove_link_btn').click(function(){
+              if($('[id=playlist_'+index+'_link]').length == 1){return;}
+              $('#playlist_'+index+'_link_cnt').val(parseInt($('#playlist_'+index+'_link_cnt').val())-1);
+              $('#playlist_'+index+'_link:last-child').remove();
+         });
+    }
+
+    function ListTypeChange(index){
+        $('#playlist_'+index+'_change_type_btn').click(function(){
+            if($('#playlist_'+index+'_type').val()==='Y'){
+                $('#playlist_'+index+'_type').val('C');
+                $('#accordion_'+index).attr('class','accordion-button collapsed bg-success');
+            }
+            else if($('#playlist_'+index+'_type').val()==='C'){
+                $('#playlist_'+index+'_type').val('Y');
+                $('#accordion_'+index).attr('class','accordion-button collapsed bg-danger');
+            }
+        });
+    }
+</script>
+<script th:replace="fragments.html::form-validation"></script>
+</body>
+</html>

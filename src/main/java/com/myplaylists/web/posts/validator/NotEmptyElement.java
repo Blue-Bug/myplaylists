@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Target(value = ElementType.FIELD)
 @Retention(value = RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = PlaylistsFormValidator.class)
+@Constraint(validatedBy = StringListValidator.class)
 public @interface NotEmptyElement {
     String message() default "비어 있는 요소가 있습니다.";
 

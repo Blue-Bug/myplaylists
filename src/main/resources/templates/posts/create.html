@@ -146,7 +146,6 @@
     }
 
     function removePlaylist(){
-        console.log(count);
         if(count === 1) return;
 
         $("#playlist"+ --count).remove();
@@ -170,7 +169,6 @@
     }
     function ListTypeChange(index){
         $('#playlist'+index+'change_type_btn').click(function(){
-            console.log($('#playlist'+index+'type').val());
             if($('#playlist'+index+'type').val()==='Y'){
                 $('#playlist'+index+'type').val('C');
                 $('#accordion'+index).attr('class','accordion-button collapsed bg-success');

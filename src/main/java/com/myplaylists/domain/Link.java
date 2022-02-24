@@ -26,5 +26,11 @@ public class Link {
         newLink.setLink(link);
         return newLink;
     }
+    public static Link createLink(String link,Playlist playlist){
+        Link newLink = new Link();
+        newLink.setLink(link);
+        newLink.setPlaylist(playlist);
+        return newLink;
+    }
 }
 

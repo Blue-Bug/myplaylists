@@ -10,7 +10,7 @@ import javax.validation.ConstraintValidatorContext;
 import java.util.List;
 
 @Component
-public class PlaylistsFormValidator implements ConstraintValidator<NotEmptyElement, List<String>> {
+public class StringListValidator implements ConstraintValidator<NotEmptyElement, List<String>> {
 
     @Override
     public void initialize(NotEmptyElement constraintAnnotation) {

@@ -4,8 +4,6 @@ import com.myplaylists.domain.Member;
 import com.myplaylists.web.member.MemberRepository;
 import com.myplaylists.web.member.MemberService;
 import com.myplaylists.web.member.form.SignUpForm;
-import com.myplaylists.web.setting.form.PasswordForm;
-import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

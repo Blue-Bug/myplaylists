@@ -1,13 +1,10 @@
 package com.myplaylists.web.posts;
 
-import com.myplaylists.domain.Link;
 import com.myplaylists.domain.Member;
 import com.myplaylists.domain.Posts;
 import com.myplaylists.web.member.MemberRepository;
 import com.myplaylists.web.member.MemberService;
 import com.myplaylists.web.member.form.SignUpForm;
-import com.myplaylists.web.posts.form.PlaylistsForm;
-import com.myplaylists.web.posts.form.PostsForm;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,9 +16,7 @@ import org.springframework.security.test.context.support.TestExecutionEvent;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
