@@ -3,11 +3,11 @@ package com.myplaylists.domain;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.myplaylists.web.posts.form.PostsForm;
 import lombok.*;
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +15,11 @@ import java.util.List;
 @Entity @EqualsAndHashCode(of="id")
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SequenceGenerator(name = "ENTITY_ID_GENERATOR"
+        ,sequenceName = "hibernate_sequence"
+        ,allocationSize = 50)
 public class Posts {
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="ENTITY_ID_GENERATOR")
     @Column(name ="posts_id")
     private Long id;
 
@@ -36,8 +39,11 @@ public class Posts {
 
     private LocalDateTime modifiedAt;
 
-    @OneToMany(mappedBy = "posts")
+    @OneToMany(mappedBy = "posts"
+        ,cascade = CascadeType.ALL
+        ,orphanRemoval = true)
     @JsonBackReference
+    @OnDelete(action = OnDeleteAction.CASCADE)
     List<Playlist> playlists = new ArrayList<>();
 
     //생성 메서드
@@ -56,7 +62,7 @@ public class Posts {
         return posts;
     }
 
-    private void addPlaylist(Playlist playlist) {
+    public void addPlaylist(Playlist playlist) {
         this.playlists.add(playlist);
         playlist.setPosts(this);
     }

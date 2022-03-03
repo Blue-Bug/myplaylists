@@ -33,12 +33,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin()
                 .loginPage("/login")
                 .successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
-                .defaultSuccessUrl(appProperties.getHost())
-                .failureUrl(appProperties.getHost()+"/login?error")
                 .permitAll();
 
         http.logout().logoutSuccessUrl("/");
-
 
         //사용자 세션을 1개로 제한
         http.sessionManagement(session -> session

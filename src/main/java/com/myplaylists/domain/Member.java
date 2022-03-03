@@ -12,8 +12,11 @@ import java.util.UUID;
 @Entity @EqualsAndHashCode(of="id")
 @Getter @Setter
 @AllArgsConstructor @NoArgsConstructor
+@SequenceGenerator(name = "ENTITY_ID_GENERATOR"
+        ,sequenceName = "hibernate_sequence"
+        ,allocationSize = 50)
 public class Member {
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="ENTITY_ID_GENERATOR")
     @Column(name = "member_id")
     private Long id;
 

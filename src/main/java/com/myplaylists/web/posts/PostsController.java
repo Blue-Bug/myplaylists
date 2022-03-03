@@ -123,9 +123,11 @@ public class PostsController {
             return "redirect:/posts/"+postsId;
         }
 
-        if(postsService.updatePosts(postsId,postsEditForm)){
+        try {
+            postsService.updatePosts(postsId,postsEditForm);
+        }
+        catch (Exception e){
             redirectAttributes.addFlashAttribute("error","잘못된 요청입니다.");
-            return "redirect:/posts/"+postsId;
         }
 
         return "redirect:/posts/"+postsId;

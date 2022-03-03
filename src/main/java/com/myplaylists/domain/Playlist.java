@@ -1,19 +1,22 @@
 package com.myplaylists.domain;
 
 import lombok.*;
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity @EqualsAndHashCode(of="id")
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SequenceGenerator(name = "ENTITY_ID_GENERATOR"
+        ,sequenceName = "hibernate_sequence"
+        ,allocationSize = 50)
 public class Playlist {
-    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id @GeneratedValue(strategy = GenerationType.SEQUENCE, generator="ENTITY_ID_GENERATOR")
     @Column(name ="playlist_id")
     private Long id;
 
@@ -23,7 +26,10 @@ public class Playlist {
 
     private String playlistType;
 
-    @OneToMany(mappedBy = "playlist")
+    @OneToMany(mappedBy = "playlist"
+            ,cascade = CascadeType.ALL
+            ,orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private List<Link> links = new ArrayList<>();
 
     private String title;
@@ -41,7 +47,7 @@ public class Playlist {
         return playlist;
     }
 
-    private void addLink(Link link) {
+    public void addLink(Link link) {
         this.links.add(link);
         link.setPlaylist(this);
     }
