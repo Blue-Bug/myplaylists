@@ -94,8 +94,7 @@ public class PostsService {
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public boolean updatePosts(String postsId, PostsEditForm postsEditForm){
-        Posts posts = postsRepository.getById(Long.parseLong(postsId));
+    public boolean updatePosts(Posts posts, PostsEditForm postsEditForm){
         posts.setTitle(postsEditForm.getTitle());
         posts.setDescription(postsEditForm.getDescription());
         posts.setModifiedAt(LocalDateTime.now());

@@ -124,7 +124,7 @@ public class PostsController {
         }
 
         try {
-            postsService.updatePosts(postsId,postsEditForm);
+            postsService.updatePosts(posts,postsEditForm);
         }
         catch (Exception e){
             redirectAttributes.addFlashAttribute("error","잘못된 요청입니다.");
