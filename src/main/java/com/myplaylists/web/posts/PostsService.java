@@ -1,13 +1,7 @@
 package com.myplaylists.web.posts;
 
-import com.myplaylists.domain.Member;
-import com.myplaylists.domain.Playlist;
-import com.myplaylists.domain.Posts;
-import com.myplaylists.domain.Link;
+import com.myplaylists.domain.*;
 import com.myplaylists.web.member.MemberRepository;
-import com.myplaylists.web.posts.LinkRepository;
-import com.myplaylists.web.posts.PlaylistRepository;
-import com.myplaylists.web.posts.PostsRepository;
 import com.myplaylists.web.posts.form.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +24,7 @@ public class PostsService {
 
     private final PostsRepository postsRepository;
     private final MemberRepository memberRepository;
+    private final CommentRepository commentRepository;
     private final ModelMapper modelMapper;
 
     public Optional<Posts> getPosts(String postsId) {
@@ -163,5 +158,32 @@ public class PostsService {
         postsRepository.save(posts);
 
         return true;
+    }
+
+    public Optional<Comment> getComment(String commentId) {
+        return commentRepository.findById(Long.parseLong(commentId));
+    }
+
+    @Transactional
+    public void addComment(Member member, Posts posts, String comment) {
+        Member byNickname = memberRepository.findByNickname(member.getNickname());
+        Comment.createComment(byNickname, posts, comment);
+    }
+
+    @Transactional
+    public void removeComment(Comment comment) {
+        commentRepository.delete(comment);
+    }
+
+    public List<Comment> getAllComment(Posts commentedPosts) {
+        Optional<List<Comment>> bycommentedPosts = commentRepository.findByCommentedPosts(commentedPosts);
+        return bycommentedPosts.get();
+    }
+
+    @Transactional
+    public void updateComment(Comment comment, CommentForm commentForm) {
+        comment.setContent(commentForm.getContent());
+        comment.setModifiedAt(LocalDateTime.now());
+        commentRepository.save(comment);
     }
 }

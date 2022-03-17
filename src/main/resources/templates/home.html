@@ -39,7 +39,7 @@
                                     </button>
                                 </h2>
                                 <div th:id="|collapse${postsStat.index}|" class="accordion-collapse collapse" th:data-bs-parent="|#posts${postsStat.index}|">
-                                    <div class="accordion-body bg-black border rounded-bottom border-dark">
+                                    <div class="accordion-body bg-light border rounded-bottom">
                                         <div th:id="|myCarousel${postsStat.index}|" class="carousel slide"  data-bs-interval="false" data-bs-ride="carousel">
                                             <div class="carousel-inner">
                                                 <th:block th:each="playlist,playlistStat : ${post.playlists}">

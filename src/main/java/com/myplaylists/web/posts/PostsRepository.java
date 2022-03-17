@@ -28,7 +28,7 @@ public interface PostsRepository extends JpaRepository<Posts,Long> {
     Page<Posts> findAllUsingFetchJoin(Pageable pageable);
 
 
-    //둘 이상의 컬렉션은 페치 조인 불가능(Link는 따로 조회해야함)
+    //둘 이상의 컬렉션은 페치 조인 불가능(Link,Comment 는 따로 조회해야함)
     @Query("SELECT distinct p FROM Posts p " +
             "join fetch p.postsOwner " +
             "join fetch p.playlists " +

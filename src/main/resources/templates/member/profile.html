@@ -36,8 +36,7 @@
                 <p>
                     <i class="bi bi-pencil-square"></i>
                     <label>작성한 댓글 : </label>
-                    <small>준비 중입니다.</small>
-                    <!--<small th:text="|${writtenComments} 개|"></small>-->
+                    <small th:text="|${writtenComments} 개|"></small>
                 </p>
                 <div th:if="${owner == true}" class="text-end py-5">
                     <a th:href="@{/setting/profile}"><button class="btn btn-primary">계정 설정하기</button></a>

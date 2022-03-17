@@ -1,7 +1,10 @@
 package com.myplaylists.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -36,9 +39,19 @@ public class Member {
 
     private String introduce;
 
-    @OneToMany(mappedBy = "postsOwner")
-    @JsonBackReference
+    @OneToMany(mappedBy = "postsOwner"
+            ,cascade = CascadeType.ALL
+            ,orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonManagedReference
     private List<Posts> posts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "writtenMember"
+            ,cascade = CascadeType.ALL
+            ,orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonManagedReference
+    private List<Comment> comments = new ArrayList<>();
 
     public void generateToken() {
         this.token = UUID.randomUUID().toString();

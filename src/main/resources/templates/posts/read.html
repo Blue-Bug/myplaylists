@@ -25,7 +25,7 @@
                 <hr class="mt-2"/>
             </div>
             <div class="row col-md-10">
-                <div class="border col-8 bg-dark rounded">
+                <div class="border col-8 bg-light rounded">
                     <div class="alert alert-primary mt-5" role="alert">
                         <small th:if="${posts.description}!=''" th:text="${posts.description}"></small>
                         <small th:unless="${posts.description}!=''">플레이리스트에 대한 설명이 없습니다.</small>
@@ -33,7 +33,6 @@
                     <div id="playerPlaceHolder">
 
                     </div>
-
                 </div>
                 <div class="border col-4 rounded">
                     <button type="button" class="btn btn-danger mt-3" th:if="${owner}==true" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
@@ -75,14 +74,76 @@
                     </th:block>
                 </div>
             </div>
-        </div>
+            <div class="row col-10">
+                <div id="comments" class="col-8">
+                    <h4 class="mt-2">
+                        Comments<span class="fs-6 ms-2 badge rounded-pill bg-danger"
+                                                   th:text="${posts.comments.size()}"/>
+                    </h4>
+                    <hr class="col-2 mt-0 mb-2 opacity-75 border border-primary border-2 rounded-3"/>
 
+                    <div class="px-0">
+                        <ul class="list-group list-group-flush">
+                            <th:block th:each="comment,commentStat : ${posts.comments}">
+                                <li th:id="|comment_${commentStat.index}|" class="list-group-item">
+                                    <span class="badge rounded-pill bg-primary text-wrap fw-bold mb-2 me-2"
+                                          style="width: 6rem; max-width: 12rem;"
+                                          th:text="${comment.nickname}"/>
+                                    <pre class="px-1" th:text="${comment.content}"/>
+
+                                    <i th:id="|comment_delete_btn_${commentStat.index}|"
+                                       class="float-end bi bi-trash3-fill" data-bs-placement="top"
+                                       data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="댓글 삭제" sec:authorize="isAuthenticated()"></i>
+                                    <i th:id="|comment_update_btn_${commentStat.index}|"
+                                       class="me-3 float-end bi bi-pencil-square" data-bs-placement="top"
+                                       data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="댓글 수정" sec:authorize="isAuthenticated()"></i>
+                                    <span class="float-end me-2"
+                                          th:text="${#temporals.format(comment.createdAt,'yy.MM.dd HH:mm:ss')}"/>
+                                </li>
+                            </th:block>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="mt-2">
+                        <h4>댓글 쓰기</h4>
+                        <hr class="col-4 mt-0 mb-3 opacity-75 border border-primary border-2 rounded-3"/>
+                    </div>
+
+                    <div class="form-floating">
+                        <textarea id="comment_input" class="form-control" style="height: 200px" onkeydown="resize(this)" onkeyup="resize(this)"></textarea>
+                        <label for="comment_input">(1에서 50자 이하, Shift+Enter 줄바꿈)</label>
+                    </div>
+
+                    <div class="mt-2">
+                        <span sec:authorize="!isAuthenticated()" class="d-inline-block float-end" tabindex="0" data-bs-placement="top" data-bs-toggle="popover"
+                              data-bs-trigger="hover focus" data-bs-content="댓글을 등록하시려면 로그인하셔야 합니다.">
+                            <button id="not_logged_in_inform_btn" class="btn btn-primary" disabled>댓글 등록</button>
+                        </span>
+
+                        <button id="comment_add_btn" class="btn btn-primary float-end" sec:authorize="isAuthenticated()">댓글 등록</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 
+    <script type="application/javascript" th:inline="javascript">
+        $(function(){
+            var csrfToken = /*[[${_csrf.token}]]*/null;
+            var csrfHeader = /*[[${_csrf.headerName}]]*/null;
+            $(document).ajaxSend(function(e,xhr,options){
+                xhr.setRequestHeader(csrfHeader,csrfToken);
+            });
+        });
+    </script>
 
     <script type="application/javascript" th:inline="javascript">
         var totalItems;
         var currentIndex;
+
         $(document).ready(function(){
             [# th:each="playlist,playlistStat : ${posts.playlists}"]
                 $('#playlist_[[${playlistStat.index}]]').click(function(){
@@ -90,8 +151,129 @@
                 });
             [/]
 
+            [# th:each="comment,commentStat : ${posts.comments}"]
+                registerDeleteCommentBtn([[${commentStat.index}]],[[${comment.id}]]);
+
+                registerUpdateCommentBtn([[${commentStat.index}]],[[${comment.id}]]);
+            [/]
+
+            $("#comment_add_btn").click(function(){
+                var data = JSON.stringify({'content':$("#comment_input").val()});
+                var successMessage = "댓글을 성공적으로 등록하였습니다.";
+                var failureMessage = "댓글 등록 중 문제가 발생했습니다.";
+                ajaxComment("POST",data,successMessage,failureMessage);
+            });
+
+            popoverActivate();
         });
 
+        function registerDeleteCommentBtn(index,id){
+            $('#comment_delete_btn_'+index).click(function(){
+                    var data = JSON.stringify({'id': id});
+                    var successMessage = "댓글을 성공적으로 삭제하였습니다.";
+                    var failureMessage = "댓글 삭제 중 문제가 발생했습니다.";
+                    ajaxComment("DELETE",data,successMessage,failureMessage);
+            });
+        }
+
+        function registerUpdateCommentBtn(index,id){
+            $('#comment_update_btn_'+index).click(function(){
+                $('#comment_'+index+' pre').contents().unwrap()
+                .wrap('<div class="row"><textarea id="update_content_'+index+'" style="width: 300px" onkeydown="resize(this)" onkeyup="resize(this)"></textarea>\
+                <div class="col update">\
+                    <button id="comment_update_'+index+'" class="btn btn-primary">변경</button>\
+                    <button id="comment_cancel_'+index+'" class="btn btn-danger">취소</button>\
+                </div>\
+                </div>');
+
+                $('#comment_update_'+index).click(function(){
+                    var content = $('#update_content_'+index).val();
+                    var data = JSON.stringify({'id':id, 'content' : content});
+                    var successMessage = "댓글을 성공적으로 수정하였습니다.";
+                    var failureMessage = "댓글 수정 중 문제가 발생했습니다.";
+                    $('#comment_'+index+' div.update').remove();
+                    $('#comment_'+index+' div').contents().unwrap();
+                    $('#comment_'+index+' textarea').contents().unwrap().wrap('<pre class="px-1"></pre>');
+                    ajaxComment("PATCH",data,successMessage,failureMessage);
+                });
+
+                $('#comment_cancel_'+index).click(function(){
+                    $('#comment_'+index+' div.update').remove();
+                    $('#comment_'+index+' div').contents().unwrap();
+                    $('#comment_'+index+' textarea').contents().unwrap().wrap('<pre class="px-1"></pre>');
+                });
+            });
+        }
+
+        function resize(obj) {
+            obj.style.height = '1px';
+            obj.style.height = (12 + obj.scrollHeight) + 'px';
+        }
+
+        function popoverActivate(){
+            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+            var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl)
+            });
+        }
+
+        function replaceComment(data){
+            var replacement = '<div id="comments" class="col-8">\
+                    <h4 class="mt-2">\
+                        Comments<span class="fs-6 ms-2 badge rounded-pill bg-danger">'+data.length+'</span>\
+                    </h4>\
+                    <hr class="col-2 mt-0 mb-2 opacity-75 border border-primary border-2 rounded-3"/>\
+                    <div class="px-0">\
+                        <ul class="list-group list-group-flush">';
+
+            data.forEach(function(comment,index){
+                replacement += '<li id="comment_'+index+'" class="list-group-item">\
+                                    <span class="badge rounded-pill bg-primary text-wrap fw-bold mb-2 me-2"\
+                                          style="width: 6rem; max-width: 12rem;">'+comment.nickname+'</span>\
+                                    <pre class="px-1">'+comment.content+'</pre>\
+                                    <i id="comment_delete_btn_'+index+'"\
+                                       class="float-end bi bi-trash3-fill" data-bs-placement="top"\
+                                       data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="댓글 삭제"\
+                                       data-bs-original-title title></i>\
+                                    <i id="comment_update_btn_'+index+'"\
+                                       class="me-3 float-end bi bi-pencil-square" data-bs-placement="top"\
+                                       data-bs-toggle="popover" data-bs-trigger="hover" data-bs-content="댓글 수정"\
+                                       data-bs-original-title title></i>\
+                                    <span class="float-end me-2">'+comment.createdAt+'</span>\
+                                </li>';
+            });
+
+            replacement += '</ul> </div> </div>';
+            $('.popover').remove();
+            $('#comments').replaceWith(replacement);
+            data.forEach(function(comment,index){
+                registerDeleteCommentBtn(index,comment.id);
+                registerUpdateCommentBtn(index,comment.id);
+            });
+            popoverActivate();
+        }
+
+        function ajaxComment(method,data,successMessage,failureMessage){
+            $.ajax({
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                method: method,
+                url: "/posts/"+[[${posts.id}]]+"/comment",
+                data: data
+            }).done(function(data, status, xhr) {
+                alert(successMessage);
+                replaceComment(data);
+                $("#comment_input").val("");
+            }).fail(function(xhr, status, errorThrown){
+                if(xhr.status===405){
+                    alert("기능을 사용하시려면 로그인 하셔야 합니다.");
+                }
+                else{
+                    var errors = xhr.responseJSON.errors;
+                    alert(failureMessage+"\n"+errors);
+                }
+            });
+        }
 
         function replacePlaylist(links,index){
             var playlist = '<div id="myCarousel" class="carousel slide"  data-bs-interval="false" data-bs-ride="carousel">\
@@ -145,15 +327,15 @@
 
             playlist += '</div>\
                 <div class="row justify-content-center">\
-                    <button id="prev" class="btn col-1 bg-transparent" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">\
+                    <a id="prev" class="btn col-1 bg-transparent" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">\
                         <span class="carousel-control-prev-icon" aria-hidden="true"></span>\
                         <span class="visually-hidden">Previous</span>\
-                    </button>\
-                    <span id="carousel-index" class="col-1 text-white text-center pt-2">i/d</span>\
-                    <button id="next" class="btn col-1 bg-transparent" type="button" data-bs-target="#myCarousel" data-bs-slide="next">\
+                    </a>\
+                    <span id="carousel-index" class="col-1 text-center pt-2">i/d</span>\
+                    <a id="next" class="btn col-1 bg-transparent" type="button" data-bs-target="#myCarousel" data-bs-slide="next">\
                         <span class="carousel-control-next-icon" aria-hidden="true"></span>\
                         <span class="visually-hidden">Next</span>\
-                    </button>\
+                    </a>\
                 </div>\
             </div>';
 

@@ -1,6 +1,7 @@
 package com.myplaylists.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.myplaylists.web.posts.form.PostsForm;
 import lombok.*;
 import org.hibernate.annotations.*;
@@ -27,6 +28,7 @@ public class Posts {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
+    @JsonBackReference
     private Member postsOwner;
 
     private String description;
@@ -42,9 +44,16 @@ public class Posts {
     @OneToMany(mappedBy = "posts"
         ,cascade = CascadeType.ALL
         ,orphanRemoval = true)
-    @JsonBackReference
     @OnDelete(action = OnDeleteAction.CASCADE)
-    List<Playlist> playlists = new ArrayList<>();
+    @JsonManagedReference
+    private List<Playlist> playlists = new ArrayList<>();
+
+    @OneToMany(mappedBy = "commentedPosts"
+            ,cascade = CascadeType.ALL
+            ,orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonManagedReference
+    private List<Comment> comments = new ArrayList<>();
 
     //생성 메서드
     public static Posts createPosts(Member postsOwner, String title, String description,List<Playlist> playlists) {

@@ -74,9 +74,10 @@ public class MemberController {
                 model.addAttribute("owner",true);
             }
         }
-        Optional<List<Posts>> byPostsOwner = postsRepository.findByPostsOwner(profileMember);
+
         model.addAttribute("profileMember",profileMember);
-        model.addAttribute("writtenPosts",byPostsOwner.get().size());
+        model.addAttribute("writtenPosts",profileMember.getPosts().size());
+        model.addAttribute("writtenComments",profileMember.getComments().size());
         return "member/profile";
     }
 }

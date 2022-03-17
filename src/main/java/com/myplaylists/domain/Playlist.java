@@ -1,5 +1,7 @@
 package com.myplaylists.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.*;
 
@@ -22,6 +24,7 @@ public class Playlist {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "posts_id")
+    @JsonBackReference
     private Posts posts;
 
     private String playlistType;
@@ -30,6 +33,7 @@ public class Playlist {
             ,cascade = CascadeType.ALL
             ,orphanRemoval = true)
     @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonManagedReference
     private List<Link> links = new ArrayList<>();
 
     private String title;
