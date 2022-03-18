@@ -139,7 +139,8 @@ public class MemberService implements UserDetailsService {
     }
 
     public boolean signOut(Member member) {
-        if(member == null){
+        Member byNickname = memberRepository.findByNickname(member.getNickname());
+        if(byNickname == null){
             return false;
         }
         memberRepository.delete(member);

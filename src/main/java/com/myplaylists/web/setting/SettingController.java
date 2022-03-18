@@ -86,9 +86,14 @@ public class SettingController {
     }
 
     @PostMapping("/setting/sign-out")
-    public String signOut(@CurrentUser Member member, HttpServletRequest req){
-        memberService.signOut(member);
+    public String signOut(@CurrentUser Member member, HttpServletRequest req, Model model,RedirectAttributes redirectAttributes){
+        if(!memberService.signOut(member)){
+            model.addAttribute(member);
+            model.addAttribute("message","회원 탈퇴 중 문제가 발생했습니다.");
+            return "setting/sign-out";
+        }
         memberService.logout(req);
+        redirectAttributes.addFlashAttribute("message","정상적으로 회원 탈퇴 되었습니다.");
         return "redirect:/";
     }
 }

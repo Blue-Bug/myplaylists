@@ -9,14 +9,40 @@
             <div th:replace="fragments.html::setting_menu (currentMenu='sign-out')"></div>
         </div>
         <div class="col-md-6">
-            <div th:if="${message != null}">
-                <span th:text="${message}"></span>
+            <div th:if="${message != null}" class="row alert alert-primary mb-2" role="alert">
+                <text class="col" th:text="${message}"></text>
+                <button type="button" class="col-2 btn-close text-end" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             <div class="row">
-                <form method="post" th:action="@{/setting/sign-out}">
-                    <p>탈퇴하시면 모든 기록이 삭제됩니다.</p>
-                    <button class="btn btn-danger" type="submit" disabled>회원탈퇴 하기</button>
-                </form>
+                <div class="alert alert-danger" role="alert">
+                    탈퇴하시기 전에 한번 더 생각해주세요. <br><br>작성하셨던 모든 기록이 삭제됩니다.
+                </div>
+                <div>
+                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                        회원 탈퇴 하기
+                    </button>
+                </div>
+                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog  modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">회원 탈퇴 확인</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                정말로 회원 탈퇴 하시겠습니까? 여태까지 작성하셨던 모든 기록이 삭제됩니다.
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+
+                                <form method="post" th:action="@{/setting/sign-out}">
+                                    <button class="btn btn-danger" type="submit">회원 탈퇴 하기</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
