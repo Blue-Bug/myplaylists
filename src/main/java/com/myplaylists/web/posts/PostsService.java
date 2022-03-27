@@ -88,7 +88,7 @@ public class PostsService {
         return true;
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public boolean updatePosts(Posts posts, PostsEditForm postsEditForm){
         posts.setTitle(postsEditForm.getTitle());
         posts.setDescription(postsEditForm.getDescription());
@@ -176,8 +176,8 @@ public class PostsService {
     }
 
     public List<Comment> getAllComment(Posts commentedPosts) {
-        Optional<List<Comment>> bycommentedPosts = commentRepository.findByCommentedPosts(commentedPosts);
-        return bycommentedPosts.get();
+        Optional<List<Comment>> byCommentedPosts = commentRepository.findByCommentedPosts(commentedPosts);
+        return byCommentedPosts.get();
     }
 
     @Transactional

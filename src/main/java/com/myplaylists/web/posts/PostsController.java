@@ -1,5 +1,6 @@
 package com.myplaylists.web.posts;
 
+import com.fasterxml.jackson.core.json.UTF8DataInputJsonParser;
 import com.myplaylists.domain.Comment;
 import com.myplaylists.domain.Member;
 import com.myplaylists.domain.Posts;
@@ -7,6 +8,7 @@ import com.myplaylists.web.member.CurrentUser;
 import com.myplaylists.web.posts.form.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
@@ -145,7 +148,7 @@ public class PostsController {
 
         if(posts.isEmpty()){
             result.put("errors","Posts가 존재하지 않습니다.");
-            return ResponseEntity.badRequest().body(result);
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
         }
 
         List<CommentForm> commentForms = getCommentFormList(posts);
@@ -161,21 +164,21 @@ public class PostsController {
 
         if(errors.hasErrors()){
             result.put("errors",errors.getFieldError().getDefaultMessage());
-            return ResponseEntity.badRequest().body(result);
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
         }
 
         Optional<Posts> posts = postsService.getPosts(postsId);
 
         if(posts.isEmpty()){
             result.put("errors","Posts가 존재하지 않습니다.");
-            return ResponseEntity.badRequest().body(result);
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
         }
 
         postsService.addComment(member,posts.get(),commentAddForm.getContent());
 
         List<CommentForm> commentForms = getCommentFormList(posts);
 
-        return ResponseEntity.ok().body(commentForms);
+        return ResponseEntity.created(URI.create("/posts/"+postsId+"/comment")).body(commentForms);
     }
 
     @ResponseBody
@@ -187,24 +190,24 @@ public class PostsController {
 
         if(posts.isEmpty()){
             result.put("errors","Posts가 존재하지 않습니다.");
-            return ResponseEntity.badRequest().body(result);
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
         }
 
         Optional<Comment> comment = postsService.getComment(commentForm.getId());
 
         if(comment.isEmpty()){
             result.put("errors","Comment가 존재하지 않습니다.");
-            return ResponseEntity.badRequest().body(result);
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
         }
 
         if(!comment.get().getCommentedPosts().equals(posts.get())){
             result.put("errors","잘못된 요청입니다.");
-            return ResponseEntity.badRequest().body(result);
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
         }
 
         if(!comment.get().getWrittenMember().getNickname().equals(member.getNickname())){
             result.put("errors","자신이 작성한 Comment만 삭제 할 수 있습니다.");
-            return ResponseEntity.badRequest().body(result);
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
         }
 
         postsService.removeComment(comment.get());
@@ -222,31 +225,31 @@ public class PostsController {
 
         if(errors.hasErrors()){
             result.put("errors",errors.getFieldError().getDefaultMessage());
-            return ResponseEntity.badRequest().body(result);
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
         }
 
         Optional<Posts> posts = postsService.getPosts(postsId);
 
         if(posts.isEmpty()){
             result.put("errors","Posts가 존재하지 않습니다.");
-            return ResponseEntity.badRequest().body(result);
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
         }
 
         Optional<Comment> comment = postsService.getComment(commentForm.getId());
 
         if(comment.isEmpty()){
             result.put("errors","Comment가 존재하지 않습니다.");
-            return ResponseEntity.badRequest().body(result);
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
         }
 
         if(!comment.get().getCommentedPosts().equals(posts.get())){
             result.put("errors","잘못된 요청입니다.");
-            return ResponseEntity.badRequest().body(result);
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
         }
 
         if(!comment.get().getWrittenMember().getNickname().equals(member.getNickname())){
             result.put("errors","자신이 작성한 Comment만 수정 할 수 있습니다.");
-            return ResponseEntity.badRequest().body(result);
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON_UTF8).body(result);
         }
 
         postsService.updateComment(comment.get(),commentForm);

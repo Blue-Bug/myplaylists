@@ -24,9 +24,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .mvcMatchers("/setting/*","/posts/create","/posts/{id}/remove",
-                        "/posts/{id}/edit","/posts/{id}/comment").authenticated()
+                        "/posts/{id}/edit").authenticated()
+                .mvcMatchers(HttpMethod.GET,"/profile/*","/posts/{id}","/posts/{id}/comment").permitAll()
+                .mvcMatchers("/posts/{id}/comment").authenticated()
                 .mvcMatchers("/","/login","/sign-up","/email-verify","/search").permitAll()
-                .mvcMatchers(HttpMethod.GET,"/profile/*","/posts/{id}").permitAll()
                 .anyRequest().denyAll();
 
 

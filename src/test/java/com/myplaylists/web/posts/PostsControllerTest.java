@@ -50,9 +50,9 @@ class PostsControllerTest {
     @Autowired
     PostsRepository postsRepository;
     @Autowired
-    EntityManager entityManager;
-    @Autowired
     ModelMapper modelMapper;
+    @Autowired
+    EntityManager em;
 
     @BeforeEach
     void BeforeEach(){
@@ -1177,14 +1177,14 @@ class PostsControllerTest {
 
         //수정할 내용
         PlaylistsEditForm playlistsEditForm1 = new PlaylistsEditForm();
-        playlistsEditForm1.setId(posts.getPlaylists().get(0).getId()+1);
+        playlistsEditForm1.setId(posts.getPlaylists().get(0).getId());
         playlistsEditForm1.setTitle("EDIT PL TITLE1");
         playlistsEditForm1.setDescription("EDIT PL DESCRIPTION1");
         playlistsEditForm1.setPlaylistType("C");
         playlistsEditForm1.setLinks(List.of("TEST LINK1","TEST LINK2","TEST LINk3"));
 
         PlaylistsEditForm playlistsEditForm2 = new PlaylistsEditForm();
-        playlistsEditForm2.setId(-1L);
+        playlistsEditForm2.setId(-11L);
         playlistsEditForm2.setTitle("EDIT PL TITLE2");
         playlistsEditForm2.setDescription("EDIT PL DESCRIPTION2");
         playlistsEditForm2.setPlaylistType("Y");
@@ -1220,6 +1220,7 @@ class PostsControllerTest {
                 .andExpect(flash().attribute("error","잘못된 요청입니다."))
                 .andExpect(redirectedUrl("/posts/"+posts.getId()));
 
+        em.clear();
 
         //수정 내용 확인
         Optional<List<Posts>> byPostsOwner = postsRepository.findByPostsOwner(postsOwner);
